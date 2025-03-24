@@ -153,7 +153,7 @@ const Header = () => {
               <Link to="/codewords" className="nav-link" onClick={() => setMobileMenuOpen(false)}>Codewords</Link>
               <Link to="/archive" className="nav-link" onClick={() => setMobileMenuOpen(false)}>Archive</Link>
               <a
-                href="https://github.com/djfracking/chatjfkfiles"
+                href="https://github.com/djfracking/jfkfilesarchive"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="nav-link github-icon"

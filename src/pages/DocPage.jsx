@@ -49,10 +49,15 @@ function DocPage() {
   const [voteCount, setVoteCount] = useState(0);
   const [docTitle, setDocTitle] = useState('');
   const [docDescription, setDocDescription] = useState('');
-  
+  const [isLoading, setIsLoading] = useState(true);
+  const pdfUrl = `https://firebasestorage.googleapis.com/v0/b/chatjfkfiles.firebasestorage.app/o/2025JFK%2F${id}.pdf?alt=media`;
+  const encodedPdfUrl = encodeURIComponent(pdfUrl);
   const shareUrl = `https://jfkfilesarchive.com/doc/${id}`;
   const shareMessage = `Check out this declassified JFK document: "${docTitle}"`;
-
+  
+  useEffect(() => {
+    setIsLoading(true);
+  }, [id]);
 
   const loadDocMetadata = async () => {
     const docRef = doc(db, "2025JFK", id);
@@ -104,23 +109,14 @@ function DocPage() {
     loadDocMetadata();
   }, [id]);
   
-
+  
+  
   useEffect(() => {
-    const pdfUrl = `https://firebasestorage.googleapis.com/v0/b/chatjfkfiles.firebasestorage.app/o/2025JFK%2F${id}.pdf?alt=media`;
-    const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+    const handleIframeLoad = () => setIsLoading(false);
+    window.addEventListener('iframeLoaded', handleIframeLoad);
   
-    if (pdfContainerRef.current) {
-      pdfContainerRef.current.innerHTML = `
-        <iframe 
-          src="https://docs.google.com/gview?embedded=true&url=${encodeURIComponent(pdfUrl)}" 
-          style="width: 100%; height: 100%; border: none;"
-          title="JFK PDF Viewer"
-        ></iframe>
-      `;
-    }
-  
-    updateViews();
-  }, [id]);
+    return () => window.removeEventListener('iframeLoaded', handleIframeLoad);
+  }, []);
   
 
   useEffect(() => {
@@ -235,7 +231,19 @@ function DocPage() {
   
     <div className="doc-page-container">
       <div className="doc-content">
-        <div className="pdf-viewer" ref={pdfContainerRef} />
+      <div className="pdf-viewer">
+          {isLoading && (
+            <div className="spinner-container">
+              <div className="spinner"></div>
+            </div>
+          )}
+          <iframe
+            src={`https://docs.google.com/gview?embedded=true&url=${encodedPdfUrl}`}
+            style={{ width: '100%', height: '100%', border: 'none', display: isLoading ? 'none' : 'block' }}
+            title="JFK PDF Viewer"
+            onLoad={() => setIsLoading(false)}
+          />
+        </div>
         <div className="doc-info">
 
           <button

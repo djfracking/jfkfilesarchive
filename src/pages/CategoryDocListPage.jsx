@@ -157,11 +157,11 @@ function CategoryDocListPage() {
             }
             
             return (
-              <div className="result-item" key={id}>
+              <div onClick={() => handleDocClick(id)}
+              className="result-item" key={id}>
                 <div className="result-left">
                   <div
                     className="doc-title clickable"
-                    onClick={() => handleDocClick(id)}
                   >
                     {doc.title}
                   </div>
