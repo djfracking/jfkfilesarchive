@@ -8,7 +8,7 @@ from firebase_admin import credentials, firestore, initialize_app
 # ----------------------------
 # 🔧 CONFIGURATION
 # ----------------------------
-CREDS_PATH = r"C:\Users\adoro\Desktop\chatjfkfiles-9364c3addedd.json"
+CREDS_PATH = r"C:\Users\\Desktop\chatjfkfiles-9364c3addedd.json"
 MAIN_DOC_COLLECTION = "2025JFK"
 GROUP_INDEX_COLLECTION = "groupsIndex"
 SIMILARITY_THRESHOLD = 0.75

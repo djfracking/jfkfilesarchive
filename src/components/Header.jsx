@@ -84,7 +84,7 @@ const Header = () => {
           <Link to="/codewords" className="nav-link">Codewords</Link>
           <Link to="/methods" className="nav-link">Methods</Link>
           <a
-            href="https://github.com/djfracking/chatjfkfiles"
+            href="https://github.com/djfracking/jfkfilesarchive"
             target="_blank"
             rel="noopener noreferrer"
             className="nav-link github-icon"

@@ -134,7 +134,7 @@ def main():
         to_process.append(image_file)
 
     print(f"Processing {len(to_process)} new images in parallel with {MAX_WORKERS} workers...")
-    credentials_path = r"C:\Users\\Desktop\DV\popularis health technologies\Popularis\popularishealth.json"
+    credentials_path = r"C:\Users\\Desktop\DV\ health technologies\\health.json"
 
     with ProcessPoolExecutor(max_workers=MAX_WORKERS) as executor:
         # Submit tasks

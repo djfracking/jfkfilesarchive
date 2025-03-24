@@ -8,8 +8,8 @@ from firebase_admin import credentials, firestore
 from google.api_core.exceptions import Aborted, DeadlineExceeded, NotFound
 
 # === CONFIG ===
-CREDS_PATH         = r"C:\Users\adoro\Desktop\chatjfkfiles-9364c3addedd.json"
-INDEX_PATH         = r"C:\Users\adoro\Desktop\JFK\indexes\reverse_word_index.json"
+CREDS_PATH         = r"C:\Users\\Desktop\chatjfkfiles-9364c3addedd.json"
+INDEX_PATH         = r"C:\Users\\Desktop\JFK\indexes\reverse_word_index.json"
 COLLECTION_NAME    = "word_index"
 SKIP_NUMERIC       = True
 MIN_WORD_LENGTH    = 2

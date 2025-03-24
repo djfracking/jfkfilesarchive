@@ -3,7 +3,7 @@ import firebase_admin
 from firebase_admin import credentials, firestore
 
 # === CONFIG ===
-CREDS_PATH = r"C:\Users\adoro\Desktop\chatjfkfiles-9364c3addedd.json"
+CREDS_PATH = r"C:\Users\\Desktop\chatjfkfiles-9364c3addedd.json"
 OUTPUT_JSON = "data/docs_index.json"
 COLLECTION = "2025JFK"
 
