@@ -1,0 +1,143 @@
+/* Hero.css */
+.hero {
+  position: relative;
+  height: 100vh;
+  background: url('../assets/jfkmosaic.png') no-repeat center center;
+  background-size: cover;
+}
+
+.hero-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5); /* semi-transparent overlay for readability */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.hero-content {
+  text-align: center;
+  color: #fff;
+  margin-top: -10rem;
+}
+
+.hero-content h1 {
+  font-size: 3rem;
+  margin-bottom: 0.5rem;
+  font-family: 'Selectric Mono'; /* clean and simple like Google */
+}
+
+.hero-content p {
+  font-size: 1.2rem;
+  margin-bottom: 2rem;
+  font-weight: 800;
+}
+
+/* Search form styling */
+.search-form {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.search-input {
+  width: 400px;
+  padding: 18px;
+  font-size: 1rem;
+  border: none;
+  border-radius: 15px;
+  margin-right: -3rem;
+  outline: none;
+}
+
+.search-button {
+  padding: 18px;
+  font-size: 1rem;
+  background-color: #0f1633;
+  border: none;
+  border-radius: 15px;
+  color: #fff;
+  cursor: pointer;
+  text-decoration: none;
+  transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+.search-button:hover {
+  background-color: #1a2554;
+  transform: translateY(-1px);
+}
+
+@media screen and (max-width: 550px) {
+
+  .search-input {
+      width: 80%;
+
+  }
+
+  .suggestions-list {
+    width: 50% !important;
+  }
+
+  .search-index-notice{
+    width: 80% !important;
+  }
+}
+
+
+
+.suggestions-list {
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #0f1633;
+  border: 1px solid #ccc;
+  border-top: none;
+  width: 450px;
+  z-index: 10;
+  max-height: 200px;
+  overflow-y: auto;
+  border-radius: 15px;
+  list-style: none;
+  margin-top: 0rem;
+}
+
+
+.suggestion-item {
+  padding: 10px;
+  cursor: pointer;
+}
+
+.suggestion-item:hover {
+  background-color: #0f1633;
+}
+
+.preDictList {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.search-wrapper {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
+.search-index-notice {
+  font-size: 12px !important;
+  color: #e2e2e2;
+  margin-top: 8px;
+  text-align: center;
+  width: 400px;
+  word-wrap: break-word;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+
+

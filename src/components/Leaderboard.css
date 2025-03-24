@@ -1,0 +1,47 @@
+.leaderboard-container {
+    max-width: 800px;
+    margin: auto;
+    padding: 2rem;
+    color: #ddd;
+  }
+  
+  .leaderboard-container h2 {
+    text-align: center;
+    margin-bottom: 1.5rem;
+  }
+  
+  .leaderboard-list {
+    list-style: none;
+    padding: 0;
+  }
+  
+  .leaderboard-item {
+    margin-bottom: 1rem;
+    padding: 1rem;
+    background: #111;
+    border-radius: 10px;
+    box-shadow: 0 0 5px #0f0;
+    transition: background 0.3s;
+  }
+  
+  .leaderboard-item:hover {
+    background: #151515;
+  }
+  
+  .leaderboard-item a {
+    color: #0f0;
+    text-decoration: none;
+    font-weight: bold;
+  }
+  
+  .rank {
+    font-weight: bold;
+    margin-right: 0.75rem;
+  }
+  
+  .doc-stats {
+    margin-top: 0.5rem;
+    font-size: 0.9rem;
+    color: #aaa;
+  }
+  

@@ -1,0 +1,470 @@
+/* Website.css */
+
+@font-face {
+    font-family: 'Selectric Mono';
+    src: url('./fonts/SelectricMono.otf') format('opentype');
+    font-weight: normal;
+    font-style: normal;
+  }
+  
+  /* Use your custom font for headings */
+  h1, h2, h3 {
+    font-family: 'Selectric Mono', var(--font-family);
+    text-shadow: 2px 2px 4px rgba(0, 255, 144, 0.5);
+  }
+  
+
+/* CSS Variables for easy theme management */
+:root {
+    --bg-color: #121212;        /* Dark background */
+    --text-color: #f1f1f1;        /* Light text */
+    --accent-color: #f2c01f;      /* Neon green for spy vibes */
+    --header-bg: #1e1e1e;         /* Slightly lighter for header/footer */
+    --border-color: #0f1633;         /* Subtle borders */
+    --font-family: 'Selectric Mono', Courier, monospace; /* Spy/tech vibe */
+  }
+  
+  /* Global Styles */
+  body {
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    font-family: var(--font-family);
+    margin: 0;
+    padding: 0;
+    line-height: 1.6;
+  }
+  
+ 
+  
+  /* Header and Navigation */
+  .header, .footer {
+    background-color: var(--header-bg);
+    padding: 1rem;
+    border-bottom: 1px solid var(--border-color);
+  }
+  
+  
+.header {
+  background-color: var(--header-bg);
+  padding: 10px 20px;
+  color: var(--text-color);
+}
+
+/* Container for the navigation */
+.nav-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* Left side: logo and site title */
+.nav-left {
+  display: flex;
+  align-items: center;
+}
+
+.site-seal {
+  height: 40px;
+  margin-right: 10px;
+  margin-bottom: 4px;
+}
+
+.site-title {
+  font-size: 1.5rem;
+  text-decoration: none;
+  color: var(--text-color);
+}
+
+/* Desktop Navigation */
+.desktop-nav {
+  display: flex;
+  align-items: center;
+  gap: 30px;
+}
+
+.nav-link {
+  color: var(--text-color);
+  text-decoration: none;
+  font-size: 1rem;
+  transition: color 0.2s;
+}
+
+.nav-link:hover {
+  color: var(--accent-color);
+}
+
+.button-primary {
+  background-color: var(--accent-color);
+  padding: 5px 10px;
+  border-radius: 4px;
+  color: var(--bg-color);
+  text-decoration: none;
+}
+
+.github-icon {
+  display: flex;
+  align-items: center;
+  margin-bottom: 5px;
+}
+
+/* Avatar and Dropdown */
+.nav-avatar-wrapper {
+  position: relative;
+}
+
+.avatar-img, .avatar-icon-wrapper {
+  height: 30px;
+  width: 30px;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.dropdown-menu {
+  position: absolute;
+  top: 40px;
+  right: 0;
+  background-color: var(--header-bg);
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  padding: 10px;
+  z-index: 10;
+}
+
+.dropdown-item {
+  margin: 5px 0;
+  cursor: pointer;
+}
+
+/* Mobile Navigation: Hide by default, show only on mobile */
+.mobile-nav {
+  display: none;
+}
+
+/* Hamburger button styling */
+.hamburger-btn {
+  background: none;
+  border: none;
+  color: var(--text-color);
+  cursor: pointer;
+}
+
+/* Mobile menu styles */
+.mobile-menu {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  background-color: var(--header-bg);
+  padding: 10px;
+  border-top: 1px solid var(--border-color);
+}
+
+/* Responsive rules: show mobile navigation only when viewport is small */
+@media screen and (max-width: 992px) {
+  .desktop-nav {
+    display: none;
+  }
+  .mobile-nav {
+    display: block;
+  }
+  .nav-container {
+  }
+}
+  
+  .trending-board {
+    background: #111;
+    color: white;
+    padding: 20px;
+    border-radius: 10px;
+    max-width: 400px;
+  }
+  
+  .trending-board ul {
+    list-style: none;
+    padding-left: 0;
+  }
+  
+  .trending-board li {
+    padding: 8px 0;
+    border-bottom: 1px solid #0f1633;
+    font-size: 1rem;
+  }
+  
+  section {
+    text-align: center;
+    }
+
+  .methods-section {
+    background: url("./assets/jfkandjackie.png") no-repeat center center;
+    background-size: cover;
+    color: white;
+    text-align: center;
+    position: relative;
+    font-weight: 800;
+  }
+  
+  .methods-overlay {
+    background-color: rgba(0, 0, 0, 0.5);
+    border-radius: 10px;
+    margin: 0 auto;
+    padding-top: 20px;
+    padding-bottom: 20px;
+    display: block ruby;
+  }
+  
+  .button-primary {
+    display: inline-block;
+    padding: 12px 28px;
+    background-color: #0f1633;
+    color: white;
+    text-decoration: none;
+    font-weight: bold;
+    border-radius: 30px;
+    transition: background 0.3s ease, transform 0.2s ease;
+    cursor: pointer;
+  }
+  
+  .button-primary:hover {
+    background-color: #1b2342;
+    transform: translateY(-2px);
+  }
+  
+  .methodsHeader {
+    padding-left: 15vw;
+    padding-right: 15vw;
+    padding-bottom: 10rem;
+    padding-top: 10rem;
+    max-width: 800px;
+  }
+
+  .book-support {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 40px;
+    padding: 60px 20px;
+    max-width: 1000px;
+    margin: 0 auto;
+  }
+  
+  .book-info {
+    flex: 1;
+    min-width: 280px;
+  }
+  
+  .book-info h2 {
+    font-size: 2rem;
+    margin-bottom: 10px;
+  }
+  
+  .book-info p {
+    font-size: 1.1rem;
+    line-height: 1.6;
+    margin-bottom: 20px;
+  }
+  
+  .amazon-button {
+    display: inline-block;
+    background-color: #FF9900;
+    color: #111;
+    font-weight: bold;
+    padding: 12px 24px;
+    border-radius: 6px;
+    text-decoration: none;
+    font-size: 1rem;
+    transition: background-color 0.2s ease;
+  }
+  
+  .amazon-button:hover {
+    background-color: #e68a00;
+  }
+  
+  .book-image {
+    flex: 1;
+    min-width: 250px;
+    text-align: center;
+  }
+  
+  .book-image img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+  }
+  
+  .footer {
+    color: #fff;
+    text-align: center;
+    padding: 40px 20px;
+  }
+  
+  .footer-logo {
+    max-width: 120px;
+    margin: 0 auto 20px;
+    display: block;
+  }
+  
+  .footer-text,
+  .footer-powered,
+  .footer-disclaimer {
+    font-size: 0.95rem;
+    margin: 10px 0;
+    line-height: 1.6;
+  }
+  
+  .footer-link {
+    color: #f5be30;
+    text-decoration: underline;
+  }
+  
+  .footer-link:hover {
+    text-decoration: none;
+  }
+  
+  .avatar-img {
+    height: 40px;
+  }
+
+  .nav-avatar-wrapper {
+    position: relative;
+    padding-bottom: 5px;
+  }
+
+  .avatar-icon-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 34px;
+    height: 34px;
+    background-color: #333;
+    border-radius: 50%;
+    color: white;
+  }
+  
+  .dropdown-menu {
+    position: absolute;
+    right: 0;
+    top: 50px;
+    background-color: #1e1e1e;
+    color: white;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 0.75rem;
+    min-width: 200px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+    z-index: 10;
+  }
+  
+  .dropdown-item {
+    margin: 0.3rem 0;
+    cursor: default;
+  }
+  
+  .dropdown-item:hover {
+    color: var(--accent-color);
+    cursor: pointer;
+  }
+  
+  .dropdown-separator {
+    border: none;
+    height: 1px;
+    background-color: var(--border-color);
+    margin: 0.5rem 0;
+  }
+  
+  
+  .terms-container {
+    max-width: 800px;
+    margin: 4rem auto;
+    padding: 2rem;
+    color: #ddd;
+    line-height: 1.6;
+  }
+  
+  .terms-container h1 {
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+  }
+  
+  .terms-container h2 {
+    font-size: 1.5rem;
+    margin-top: 2rem;
+    color: #00ff99;
+  }
+  
+  .terms-container p {
+    margin-top: 1rem;
+  }
+  
+  .privacy-container {
+    max-width: 800px;
+    margin: 4rem auto;
+    padding: 2rem;
+    color: #ddd;
+    line-height: 1.6;
+  }
+  
+  .privacy-container h1 {
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+  }
+  
+  .privacy-container h2 {
+    font-size: 1.5rem;
+    margin-top: 2rem;
+    color: #00ff99;
+  }
+  
+  .privacy-container p {
+    margin-top: 1rem;
+  }
+  
+  .privacy-container ul {
+    margin-top: 1rem;
+    padding-left: 1.5rem;
+  }
+  
+  .privacy-container li {
+    margin-bottom: 0.5rem;
+  }
+  
+  .codewords-admin-container {
+    max-width: 700px;
+    margin: auto;
+    padding: 2rem;
+  }
+  
+  .codewords-form {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin-bottom: 2rem;
+  }
+  
+  .codewords-form input {
+    padding: 0.5rem;
+    font-size: 1rem;
+  }
+  
+  .codewords-form button {
+    padding: 0.5rem;
+    font-size: 1rem;
+    background: #0077cc;
+    color: white;
+    border: none;
+    cursor: pointer;
+  }
+  
+  .codewords-list {
+    border-top: 1px solid #ccc;
+    padding-top: 1rem;
+  }
+  
+  .codeword-entry {
+    margin-bottom: 1.5rem;
+  }
+  
+  .codeword-entry h3 {
+    text-transform: uppercase;
+    margin-bottom: 0.25rem;
+  }
+  

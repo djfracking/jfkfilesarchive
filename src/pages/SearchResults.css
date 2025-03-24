@@ -1,0 +1,134 @@
+.search-container {
+    padding: 40px 20px;
+    max-width: 960px;
+    margin: 0 auto;
+    color: #f0f0f0;
+    min-height: 20rem;
+  }
+  
+  .search-bar {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 25px;
+  }
+  
+  .search-bar input {
+    flex: 1;
+    padding: 10px 14px;
+    border: none;
+    border-radius: 6px;
+    background-color: #121212;
+    color: #f0f0f0;
+    border: 1px solid #333;
+  }
+  
+  .search-bar button {
+    padding: 10px 20px;
+    background-color: #00ffcc;
+    color: #000;
+    border: none;
+    border-radius: 6px;
+    font-weight: bold;
+    cursor: pointer;
+  }
+  
+  .search-bar button:hover {
+    background-color: #00ddb3;
+  }
+  
+  .results-summary {
+    font-size: 0.95rem;
+    color: #aaa;
+    margin-bottom: 15px;
+  }
+  
+  .results-list {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+  
+  .result-item {
+    background-color: #1b1b1b;
+    padding: 18px;
+    border-radius: 10px;
+    border: 1px solid #2b2b2b;
+    transition: border 0.2s;
+    cursor: pointer;
+    display: flex;
+    flex-direction: row;
+  }
+
+  .result-left {
+    padding-right: 20px;
+  }
+  
+  .result-item:hover {
+    border-color: #00ffcc;
+  }
+  
+  .doc-title {
+    font-size: 1.15rem;
+    color: #00ffcc;
+    text-decoration: none;
+    font-weight: 600;
+  }
+  
+  .doc-title:hover {
+    text-decoration: underline;
+  }
+  
+  .doc-url {
+    color: #888;
+    font-size: 0.85rem;
+    margin-top: 4px;
+    margin-bottom: 8px;
+  }
+  
+  .doc-meta {
+    font-size: 0.85rem;
+    color: #bbb;
+    display: flex;
+    gap: 15px;
+    flex-wrap: wrap;
+  }
+  
+  .pagination {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    margin: 2rem 0;
+    font-weight: bold;
+  }
+  
+  .did-you-mean {
+    margin: 1rem 0;
+    font-style: italic;
+    font-size: 1rem;
+  }
+  
+  .did-you-mean-button {
+    background: none;
+    border: none;
+    color: blue;
+    text-decoration: underline;
+    cursor: pointer;
+    font-size: 1rem;
+  }
+  
+  /* Mobile fix: stack the info ABOVE the PDF */
+@media (max-width: 768px) {
+
+  .result-item  {
+    flex-direction: column;
+  }
+
+}
+
+.doc-description {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 10; /* Optional: limits to 5 lines */
+  -webkit-box-orient: vertical;
+}
