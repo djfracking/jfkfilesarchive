@@ -31,6 +31,8 @@ import {
   WhatsappIcon,
   EmailIcon,
 } from 'react-share';
+import { Document, Page, pdfjs } from 'react-pdf';
+import TextSearchModal from '../components/TextSearchModal';
 
 function DocPage() {
   const { id } = useParams();
@@ -50,6 +52,11 @@ function DocPage() {
   const [docTitle, setDocTitle] = useState('');
   const [docDescription, setDocDescription] = useState('');
   const [isLoading, setIsLoading] = useState(true);
+  const [failedGoogleViewer, setFailedGoogleViewer] = useState(false);
+  const [showTextSearch, setShowTextSearch] = useState(false);
+
+  pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.min.js`;
+
   const pdfUrl = `https://firebasestorage.googleapis.com/v0/b/chatjfkfiles.firebasestorage.app/o/2025JFK%2F${id}.pdf?alt=media`;
   const encodedPdfUrl = encodeURIComponent(pdfUrl);
   const shareUrl = `https://jfkfilesarchive.com/doc/${id}`;
@@ -57,7 +64,15 @@ function DocPage() {
   
   useEffect(() => {
     setIsLoading(true);
+    setFailedGoogleViewer(false);
+    const fallbackTimer = setTimeout(() => {
+      setFailedGoogleViewer(true);
+      setIsLoading(false);
+    }, 5000); // Fallback after 5 seconds
+
+    return () => clearTimeout(fallbackTimer);
   }, [id]);
+  
 
   const loadDocMetadata = async () => {
     const docRef = doc(db, "2025JFK", id);
@@ -219,6 +234,8 @@ function DocPage() {
     }
   };
 
+  
+
   return (
     <><Helmet>
     <title>{docTitle}</title>
@@ -231,19 +248,32 @@ function DocPage() {
   
     <div className="doc-page-container">
       <div className="doc-content">
-      <div className="pdf-viewer">
-          {isLoading && (
-            <div className="spinner-container">
-              <div className="spinner"></div>
-            </div>
-          )}
-          <iframe
-            src={`https://docs.google.com/gview?embedded=true&url=${encodedPdfUrl}`}
-            style={{ width: '100%', height: '100%', border: 'none', display: isLoading ? 'none' : 'block' }}
-            title="JFK PDF Viewer"
-            onLoad={() => setIsLoading(false)}
-          />
+        <div className="pdf-viewer">
+      {isLoading && (
+        <div className="spinner-container">
+          <div className="spinner"></div>
         </div>
+      )}
+
+      {!failedGoogleViewer ? (
+        <iframe
+          src={`https://docs.google.com/gview?embedded=true&url=${encodedPdfUrl}`}
+          style={{ width: '100%', height: '100%', border: 'none', display: isLoading ? 'none' : 'block' }}
+          title="JFK PDF Viewer"
+          onLoad={() => setIsLoading(false)}
+          onError={() => {
+            setFailedGoogleViewer(true);
+            setIsLoading(false);
+          }}
+        />
+      ) : (
+        <embed
+          src={pdfUrl}
+          type="application/pdf"
+          style={{ width: '100%', height: '100%', border: 'none' }}
+        />
+      )}
+    </div>
         <div className="doc-info">
 
           <button
@@ -254,6 +284,17 @@ function DocPage() {
           </button>
           <h2>{docTitle}</h2>
           <p>{docDescription}</p>
+          <h2>
+            <small style={{ marginLeft: '10px' }}>
+              (ID: {id})
+              <a href={pdfUrl} download style={{ marginLeft: '8px', fontSize: '0.8rem' }}>
+                [Download PDF]
+              </a>
+            </small>
+          </h2>
+          <button className="text-search-btn" onClick={() => setShowTextSearch(true)}>
+            🔍 Search Document Text
+          </button>
 
         <div className="share-buttons">
                   <p style={{ marginBottom: '6px' }}>Share this document:</p>
@@ -314,6 +355,10 @@ function DocPage() {
         </div>
       </div>
     </div>
+    {showTextSearch && (
+  <TextSearchModal docId={id} onClose={() => setShowTextSearch(false)} />
+)}
+
     </>
   );
 }

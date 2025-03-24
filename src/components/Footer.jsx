@@ -14,6 +14,9 @@ const Footer = () => {
       <p className="footer-text">
         &copy; {new Date().getFullYear()} JFK Assasination Files Archive. Open Sourced - MIT Licence.
       </p>
+      <p className="footer-text">
+      In Beta, updates every day.
+      </p>
 
       <p className="footer-powered">
         Powered by liquid gold from DJ Fracking. Learn more at{" "}
@@ -31,6 +34,16 @@ const Footer = () => {
         This website is for educational purposes only. Any assets and government-related imagery are used strictly for commentary and archival reference, and do not imply government affiliation or endorsement.
       </p>
 
+      <p>For comments, questions, or protest please reach me at {" "}
+      <a
+          href="https://djfracking.org"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="footer-link"
+        >
+           djfracking.org
+        </a>
+        </p>
       <div className="footer-legal">
         <a href="/terms" className="footer-link">Terms of Service</a>
         <span className="footer-divider">    |    </span>

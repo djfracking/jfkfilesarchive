@@ -8,7 +8,7 @@ const Hero = ({ handleSearch }) => {
       <div className="hero-overlay">
         <div className="hero-content">
           <h1>JFK Assassination Files</h1>
-          <p>68,000 AI-Scanned 2025 JFK Assassination Records</p>
+          <p>68,000 AI-Scanned 2025 JFK Assassination Records.</p>
           <SearchBar handleSearch={handleSearch} />
         </div>
       </div>
