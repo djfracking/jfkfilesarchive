@@ -448,45 +448,53 @@ const Comments = ({ docId }) => {
       // Create a deep copy of comments to modify (to avoid any state update issues)
       const updatedComments = comments.map(comment => {
         if (comment.id !== commentId) return comment;
-        
-        // Create a copy of the comment with a new userVotes object to avoid reference issues
+      
         const updatedComment = {
           ...comment,
           userVotes: { ...(comment.userVotes || {}) }
         };
-        
-        // Handle vote logic based on previous vote and new vote
-        if (currentUserVote === type) {
-          // User is clicking the same button again, so remove their vote
+      
+        const previousVote = updatedComment.userVotes[currentUser?.uid];
+      
+        if (previousVote === type) {
+          // 🔁 Same vote clicked → remove it
           delete updatedComment.userVotes[currentUser?.uid];
-          if (type === 'up') updatedComment.upvotes = Math.max(0, (updatedComment.upvotes || 0) - 1);
-          if (type === 'down') updatedComment.downvotes = Math.max(0, (updatedComment.downvotes || 0) - 1);
-        } else if (currentUserVote) {
-          // User already voted differently, so switch their vote
-          updatedComment.userVotes[currentUser?.uid] = type;
-          
-          // Remove the previous vote count
-          if (currentUserVote === 'up') {
+          if (type === 'up') {
             updatedComment.upvotes = Math.max(0, (updatedComment.upvotes || 0) - 1);
-          } else if (currentUserVote === 'down') {
+            updatedComment.voteDelta = (updatedComment.voteDelta || 0) - 1;
+          } else {
             updatedComment.downvotes = Math.max(0, (updatedComment.downvotes || 0) - 1);
+            updatedComment.voteDelta = (updatedComment.voteDelta || 0) + 1;
           }
-          
-          // Add the new vote count
-          if (type === 'up') updatedComment.upvotes = (updatedComment.upvotes || 0) + 1;
-          if (type === 'down') updatedComment.downvotes = (updatedComment.downvotes || 0) + 1;
-        } else {
-          // User hasn't voted yet, so add their new vote
+        } else if (previousVote) {
+          // 🔁 Switching vote (up ↔ down)
           updatedComment.userVotes[currentUser?.uid] = type;
-          if (type === 'up') updatedComment.upvotes = (updatedComment.upvotes || 0) + 1;
-          if (type === 'down') updatedComment.downvotes = (updatedComment.downvotes || 0) + 1;
+      
+          if (previousVote === 'up') {
+            updatedComment.upvotes = Math.max(0, (updatedComment.upvotes || 0) - 1);
+            updatedComment.downvotes = (updatedComment.downvotes || 0) + 1;
+            updatedComment.voteDelta = (updatedComment.voteDelta || 0) - 2;
+          } else {
+            updatedComment.downvotes = Math.max(0, (updatedComment.downvotes || 0) - 1);
+            updatedComment.upvotes = (updatedComment.upvotes || 0) + 1;
+            updatedComment.voteDelta = (updatedComment.voteDelta || 0) + 2;
+          }
+        } else {
+          // ✅ New vote
+          updatedComment.userVotes[currentUser?.uid] = type;
+          if (type === 'up') {
+            updatedComment.upvotes = (updatedComment.upvotes || 0) + 1;
+            updatedComment.voteDelta = (updatedComment.voteDelta || 0) + 1;
+          } else {
+            updatedComment.downvotes = (updatedComment.downvotes || 0) + 1;
+            updatedComment.voteDelta = (updatedComment.voteDelta || 0) - 1;
+          }
         }
-        
-        // Recalculate voteDelta
-        updatedComment.voteDelta = (updatedComment.upvotes || 0) - (updatedComment.downvotes || 0);
-        
+      
         return updatedComment;
       });
+      
+      
       
       // Update state in a single operation to prevent flashing
       setComments(updatedComments);
@@ -641,7 +649,9 @@ const Comments = ({ docId }) => {
         {comments.length === 0 && !loading ? (
           <p style={styles.noCommentsText}>No comments yet. Be the first to comment!</p>
         ) : (
-          comments.map((comment) => {
+          [...comments]
+          .sort((a, b) => (b.voteDelta || 0) - (a.voteDelta || 0))
+          .map((comment) => {
             const isOwnComment = currentUser?.uid === comment.userId;
             const isEditing = editingId === comment.id;
             

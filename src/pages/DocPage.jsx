@@ -89,18 +89,21 @@ function DocPage() {
     const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
       setUser(currentUser);
       if (currentUser) {
-        try {
-          const bookmarkRef = doc(db, "users", currentUser.uid, "bookmarks", id);
-          const bookmarkSnap = await getDoc(bookmarkRef);
-          setIsBookmarked(bookmarkSnap.exists());
-        } catch (err) {
-          console.error("Error checking bookmark status:", err);
+        const voteRef = doc(db, "docVotes", `${currentUser.uid}_${id}`);
+        const voteSnap = await getDoc(voteRef);
+        if (voteSnap.exists()) {
+          setVotingState(voteSnap.data().type); // 'up' or 'down'
         }
-
       }
+      
     });
     return () => unsubscribe();
   }, [auth, db, id]);
+
+  useEffect(() => {
+    loadDocMetadata();
+  }, [id]);
+  
 
   useEffect(() => {
     const pdfUrl = `https://firebasestorage.googleapis.com/v0/b/chatjfkfiles.firebasestorage.app/o/2025JFK%2F${id}.pdf?alt=media`;
