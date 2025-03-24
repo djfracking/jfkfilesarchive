@@ -33,6 +33,7 @@ import {
 } from 'react-share';
 import { Document, Page, pdfjs } from 'react-pdf';
 import TextSearchModal from '../components/TextSearchModal';
+import PdfViewer from '../components/PdfViewer';
 
 function DocPage() {
   const { id } = useParams();
@@ -54,23 +55,25 @@ function DocPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [failedGoogleViewer, setFailedGoogleViewer] = useState(false);
   const [showTextSearch, setShowTextSearch] = useState(false);
-
-  pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.min.js`;
+  const [isMobile, setIsMobile] = useState(false);
 
   const pdfUrl = `https://firebasestorage.googleapis.com/v0/b/chatjfkfiles.firebasestorage.app/o/2025JFK%2F${id}.pdf?alt=media`;
   const encodedPdfUrl = encodeURIComponent(pdfUrl);
   const shareUrl = `https://jfkfilesarchive.com/doc/${id}`;
   const shareMessage = `Check out this declassified JFK document: "${docTitle}"`;
-  
-  useEffect(() => {
-    setIsLoading(true);
-    setFailedGoogleViewer(false);
-    const fallbackTimer = setTimeout(() => {
-      setFailedGoogleViewer(true);
-      setIsLoading(false);
-    }, 5000); // Fallback after 5 seconds
 
-    return () => clearTimeout(fallbackTimer);
+
+  useEffect(() => {
+    const checkIfMobile = () => {
+      const userAgent = navigator.userAgent || navigator.vendor || window.opera;
+      const mobile = /android|iphone|ipad|ipod|windows phone/i.test(userAgent.toLowerCase());
+      setIsMobile(mobile);
+    };
+    checkIfMobile();
+  }, []);
+
+  useEffect(() => {
+    loadDocMetadata();
   }, [id]);
   
 
@@ -248,34 +251,19 @@ function DocPage() {
   
     <div className="doc-page-container">
       <div className="doc-content">
-        <div className="pdf-viewer">
-      {isLoading && (
-        <div className="spinner-container">
-          <div className="spinner"></div>
-        </div>
-      )}
+      <div className="pdf-viewer">
+      <PdfViewer
+          pdfUrl={pdfUrl}
+          isMobile={isMobile}
+          setIsLoading={setIsLoading}
+          setFailedGoogleViewer={setFailedGoogleViewer}
+          failedGoogleViewer={failedGoogleViewer}  
+        />
 
-      {!failedGoogleViewer ? (
-        <iframe
-          src={`https://docs.google.com/gview?embedded=true&url=${encodedPdfUrl}`}
-          style={{ width: '100%', height: '100%', border: 'none', display: isLoading ? 'none' : 'block' }}
-          title="JFK PDF Viewer"
-          onLoad={() => setIsLoading(false)}
-          onError={() => {
-            setFailedGoogleViewer(true);
-            setIsLoading(false);
-          }}
-        />
-      ) : (
-        <embed
-          src={pdfUrl}
-          type="application/pdf"
-          style={{ width: '100%', height: '100%', border: 'none' }}
-        />
-      )}
-    </div>
+
+          </div>
+
         <div className="doc-info">
-
           <button
             className="back-to-results button-primary"
             onClick={() => window.history.length > 1 ? navigate(-1) : navigate("/")}

@@ -45,3 +45,19 @@
     color: #aaa;
   }
   
+  .leaderboard-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    border-bottom: 1px solid #ccc;
+  }
+  
+  .leaderboard-item img.thumbnail {
+    width: 80px;
+    height: auto;
+    margin-left: 20px;
+    border-radius: 4px;
+    object-fit: cover;
+  }
+  
