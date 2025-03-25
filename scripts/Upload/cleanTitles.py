@@ -4,7 +4,7 @@ from firebase_admin import credentials, firestore
 from tqdm import tqdm
 
 # === Config ===
-CREDS_PATH = r"C:\Users\\Desktop\chatjfkfiles-9364c3addedd.json"
+CREDS_PATH = r"C:\Users\adoro\Desktop\chatjfkfiles-9364c3addedd.json"
 COLLECTION_NAME = "2025JFK"
 BATCH_SIZE = 500  # Adjust if needed
 
@@ -24,7 +24,8 @@ cancellation_lines = {
         "Here is a concise and informative summary:",
         "Here is a summary of the document excerpt in 2-3 concise sentences:",
         "Here is a concise summary:",
-        "Here is a summary of the document excerpt:"
+        "Here is a summary of the document excerpt:",
+        "Here is a summary of the excerpt in 2-3 concise and informative sentences:"
     ]
 }
 

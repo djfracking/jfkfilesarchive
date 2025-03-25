@@ -125,7 +125,7 @@ function SignIn() {
           onClick={() => handleLogin(() => signInWithPopup(auth, provider))}
           disabled={loading}
         >
-          {loading ? 'Loading…' : <>
+          {loading ? '' : <>
             <img src={googleLogo} alt="Google Logo" className="google-logo" />
             Continue with Google
           </>}
@@ -136,7 +136,7 @@ function SignIn() {
           onClick={() => handleLogin(() => signInAnonymously(auth))}
           disabled={loading}
         >
-          {loading ? <span className="spinner">Loading…</span> : <>
+          {loading ? <span className="spinner"></span> : <>
             <FontAwesomeIcon icon={faUserSecret} className="anon-icon" />
             Continue Anonymously
           </>}

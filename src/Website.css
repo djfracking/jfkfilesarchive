@@ -168,6 +168,10 @@
   }
   .nav-container {
   }
+
+  .bookmarks-list {
+    width: 90%;
+  }
 }
   
   .trending-board {
@@ -466,5 +470,146 @@
   .codeword-entry h3 {
     text-transform: uppercase;
     margin-bottom: 0.25rem;
+  }
+  
+  .edit-input {
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    border: 1px solid var(--border-color);
+    padding: 5px 10px;
+    border-radius: 4px;
+    width: 100%;
+  }
+  
+  .save-btn, .edit-btn {
+    background-color: var(--accent-color);
+    color: var(--bg-color);
+    border: none;
+    padding: 8px 15px;
+    margin-left: 10px;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  
+  .save-btn:hover, .edit-btn:hover {
+    background-color: #1b2342;
+    transform: translateY(-2px);
+  }
+  
+  .bookmarks-container {
+    padding: 20px;
+    padding-left: 20%;
+    padding-right: 20%;
+  }
+  
+  /* Ensure content is displayed properly on smaller screens */
+  @media (max-width: 768px) {
+    .bookmarks-container {
+      padding-left: 10%;
+      padding-right: 10%;
+    }
+  
+    .bookmark-item {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+  
+    .bookmark-content {
+      flex-direction: column;
+      align-items: flex-start;
+      margin-bottom: 10px;
+    }
+  
+    .thumbnail {
+      width: 50px;
+      height: 50px;
+      margin-bottom: 10px;
+    }
+  
+    .doc-title-link {
+      font-size: 14px;
+      margin-bottom: 5px;
+    }
+  
+    .bookmark-meta {
+      font-size: 10px;
+    }
+  
+    .remove-btn {
+      font-size: 10px;
+      padding: 5px 8px;
+    }
+  }
+  
+  /* Normal desktop layout */
+  .bookmark-list {
+    list-style-type: none;
+    padding: 0;
+  }
+  
+  .bookmark-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+    border-bottom: 1px solid #ccc;
+    padding-bottom: 10px;
+  }
+  
+  .bookmark-content {
+    display: flex;
+    align-items: center;
+    flex: 1;
+  }
+  
+  .thumbnail {
+    width: 60px;
+    height: 60px;
+    object-fit: cover;
+    margin-right: 15px;
+  }
+  
+  .doc-title-link {
+    font-size: 16px;
+    font-weight: bold;
+    text-decoration: none;
+    color: #333;
+  }
+  
+  .doc-title-link:hover {
+    color: #007bff;
+  }
+  
+  .bookmark-meta {
+    margin-left: 10px;
+    font-size: 12px;
+    color: #666;
+  }
+  
+  .remove-btn {
+    background-color: #ff4d4d;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    font-size: 12px;
+    cursor: pointer;
+    border-radius: 4px;
+  }
+  
+  .remove-btn:hover {
+    background-color: #e03e3e;
+  }
+  
+  /* Optional: Hide bookmark meta on mobile */
+  @media (max-width: 768px) {
+    .bookmark-meta {
+      display: none;
+    }
+  }
+  
+  /* Optional: Hide the "remove" button on mobile for a cleaner layout */
+  @media (max-width: 768px) {
+    .remove-btn {
+      display: none;
+    }
   }
   

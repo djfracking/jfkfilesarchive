@@ -4,6 +4,8 @@ import googleVisionImage from "../assets/googlevision.png";
 import "../Website.css";
 import "./Methods.css";
 import { Helmet } from 'react-helmet';
+import scannedSizeImage from '../assets/scannedSize.JPG'
+import scanningImage from '../assets/scanning.JPG'
 
 const Methods = () => {
   return (
@@ -30,8 +32,7 @@ const Methods = () => {
       <div className="methods-intro">
         <h1>My Methods</h1>
         <p className="mission-statement">
-          I'm committed to uncovering the truth about who killed JFK.
-          To do that, I had to scan and catalog everything — every memo, every redacted page, every buried lead.
+          I'm committed to uncovering the truth about who killed President John F. Kennedy.
         </p>
       </div>
 
@@ -39,18 +40,26 @@ const Methods = () => {
         <h2>Step 1: Benchmarking OCR Engines</h2>
         <p>
           I began by testing leading OCR tools on real pages from the JFK assassination archive. The tools included <strong>EasyOCR</strong>, <strong>Tesseract</strong>, <strong>Adobe OCR</strong>, and <strong>Google Vision OCR</strong>.
-          Google Vision delivered the most accurate results, especially on degraded and typewritten government scans.
+          Google Vision delivered the most accurate results, especially on degraded and typewritten government scans. I used documents that had been printed with the IBM Selectric 1, with the Courier72 font on the ball mechanism.
         </p>
         <img src={ocrImage} alt="OCR Benchmarking" className="methods-image" />
       </div>
-
       <div className="methods-step">
         <h2>Step 2: Downloading and Converting the Archive</h2>
         <p>
           Using a custom script, I downloaded <strong>2,182 PDFs</strong> from the National Archives at <a href="https://www.archives.gov/research/jfk" target="_blank" rel="noopener noreferrer">archives.gov</a>.
           Each PDF was converted into high-resolution, 600 DPI JPGs — one page per image — resulting in <strong>68,548 images</strong> and over <strong>125 GB</strong> of raw data.
         </p>
+        <img src={scannedSizeImage} alt="Size of JPGs Folder" className="methods-image" />
+        <p>
+          The image above shows the size of the scanned folder after creating the JPGs for all documents.
+        </p>
+        <img src={scanningImage} alt="Scanning Process" className="methods-image" />
+        <p>
+          The second image shows the scanning process, where all 8 cores of the Coffee Lake i7 processor with 64GB of memory working hard, running non-stop for over 20 hours to process the images into JPGs.
+        </p>
       </div>
+
 
       <div className="methods-step">
         <h2>Step 3: Google Vision OCR and Text Extraction</h2>
@@ -176,7 +185,6 @@ const Methods = () => {
       <p>
         All indexing, uploading, and model processing was done entirely offline and locally before syncing to the cloud. No proprietary tools, no black-box APIs — just open-source models, Firebase, and a custom-built intelligence engine.
       </p>
-
 
     </section>
   );

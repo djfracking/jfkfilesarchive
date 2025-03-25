@@ -130,27 +130,30 @@ function SignUp() {
   
 
   const handleAnonymousSignUp = async () => {
-    setLoading(true);
-    setError('');
-    try {
-      const result = await signInAnonymously(auth);
-      const user = result.user;
-      const randomName = generateAnonymousUsername();
-
-      sessionStorage.setItem('anonUser', JSON.stringify({
-        uid: user.uid,
-        isAnonymous: true,
-        createdAt: new Date().toISOString(),
-        username: randomName,
-      }));
-
-      await createUserDocIfNotExists(user, null, randomName);
-      navigate('/');
-    } catch (err) {
-      setError(err.message);
+    if (window.confirm("Warning: If you sign up anonymously, your bookmarks will be wiped each browser session. Are you sure you want to continue?")) {
+      setLoading(true);
+      setError('');
+      try {
+        const result = await signInAnonymously(auth);
+        const user = result.user;
+        const randomName = generateAnonymousUsername();
+  
+        sessionStorage.setItem('anonUser', JSON.stringify({
+          uid: user.uid,
+          isAnonymous: true,
+          createdAt: new Date().toISOString(),
+          username: randomName,
+        }));
+  
+        await createUserDocIfNotExists(user, null, randomName);
+        navigate('/');
+      } catch (err) {
+        setError(err.message);
+      }
+      setLoading(false);
     }
-    setLoading(false);
   };
+  
 
   return (
     <div className="auth-page">

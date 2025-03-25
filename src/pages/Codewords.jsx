@@ -60,7 +60,8 @@ const CodeWordsAdmin = () => {
 
   return (
     <div className="codewords-admin-container">
-      <h2>🧠 Code Word Index</h2>
+      <h2>Code Word Index</h2>
+      <p>Due to the large amout of CIA codewords and ciphers, our search algorithm uses a user submitted index of codewords and meanings to find documents.</p>
 
       <form className="codewords-form" onSubmit={handleSubmit}>
         <input
@@ -87,7 +88,7 @@ const CodeWordsAdmin = () => {
               <h3>{word}</h3>
               <ul>
                 {meanings.map((meaning, idx) => (
-                  <li key={idx}>🔹 {meaning}</li>
+                  <li key={idx}>{meaning}</li>
                 ))}
               </ul>
             </div>

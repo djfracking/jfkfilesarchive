@@ -96,7 +96,7 @@ const Header = () => {
               {avatarURL ? (
                 <img
                   src={avatarURL}
-                  alt="User Avatar"
+                  alt=""
                   className="avatar-img"
                   title={authUser.email || "User"}
                   onClick={() => setDropdownOpen(!dropdownOpen)}
