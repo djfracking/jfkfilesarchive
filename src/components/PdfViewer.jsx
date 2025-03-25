@@ -4,7 +4,7 @@ const PdfViewer = ({ pdfUrl }) => {
   return (
     <div style={{ width: '100%', height: '100%', position: 'relative' }}>
       <iframe
-        src={`https://docs.google.com/gview?embedded=true&url=${encodeURIComponent(pdfUrl)}`}
+        src={pdfUrl}
         style={{ width: '100%', height: '100%', border: 'none' }}
         title="PDF Viewer"
       />

@@ -34,7 +34,6 @@
     line-height: 1.6;
   }
   
- 
   
   /* Header and Navigation */
   .header, .footer {
@@ -100,6 +99,7 @@
   color: var(--bg-color);
   text-decoration: none;
 }
+
 
 .github-icon {
   display: flex;
@@ -225,6 +225,8 @@
     border-radius: 30px;
     transition: background 0.3s ease, transform 0.2s ease;
     cursor: pointer;
+    box-shadow: 0 0 0 4px var(--accent-color);
+
   }
   
   .button-primary:hover {
