@@ -34,6 +34,7 @@ import {
 import { Document, Page, pdfjs } from 'react-pdf';
 import TextSearchModal from '../components/TextSearchModal';
 import PdfViewer from '../components/PdfViewer';
+import RelatedDocsCarousel from '../components/RelatedDocsCarousel';
 
 function DocPage() {
   const { id } = useParams();
@@ -342,6 +343,7 @@ function DocPage() {
           </div>
         </div>
       </div>
+      <RelatedDocsCarousel docId={id} />
     </div>
     {showTextSearch && (
   <TextSearchModal docId={id} onClose={() => setShowTextSearch(false)} />

@@ -13,6 +13,7 @@ import {
 } from "firebase/firestore";
 
 import "./SearchResults.css";
+import { LoadingStates } from "../components/LoadingStates"; // Adjust path if needed
 
 const SearchResults = () => {
   const [searchParams] = useSearchParams();
@@ -29,6 +30,7 @@ const SearchResults = () => {
   const [docStats, setDocStats] = useState({});
   const [docTitles, setDocTitles] = useState({});
   const [docDescriptions, setDocDescriptions] = useState({});
+  const [searchStage, setSearchStage] = useState("");
 
   const navigate = useNavigate();
   const app = getApp();
@@ -208,7 +210,9 @@ const SearchResults = () => {
         <button type="submit">Search</button>
       </form>
 
-      {loading && <p>🔍 Searching...</p>}
+      {loading && 
+      <LoadingStates searchStage={searchStage} />
+      }
       {error && <p>{error}</p>}
 
       {!loading && results && results.data && (

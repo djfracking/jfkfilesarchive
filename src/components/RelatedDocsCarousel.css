@@ -1,0 +1,64 @@
+/* RelatedDocsCarousel.css */
+.related-docs-carousel {
+    padding: 20px 0;
+    padding-left: 5%;
+    padding-right: 5%;
+    position: relative; /* Ensure buttons are positioned relative to this container */
+  }
+  
+  .carousel-container {
+    display: flex;
+    overflow-x: hidden; /* Hide the scrollbar */
+    gap: 15px;
+    padding: 10px 0;
+  }
+  
+  .carousel-item {
+    width: 200px;
+    min-width: 200px;
+    text-align: center;
+    cursor: pointer;
+  }
+  
+  .carousel-thumbnail {
+    width: 100%;
+    height: 250px;
+    object-fit: cover;
+    border-radius: 5px;
+  }
+  
+  .carousel-title {
+    font-size: 1rem;
+    margin-top: 8px;
+    color: #c5c5c5;
+    font-weight: bold;
+  }
+  
+  /* Scroll buttons */
+  .scroll-button {
+    position: absolute;
+    top: 50%; /* Vertically center the buttons */
+    transform: translateY(-50%);
+    background-color: transparent;
+    border: none;
+    font-size: 2rem;
+    cursor: pointer;
+    color: #0073e6;
+    padding: 10px;
+    z-index: 10;
+    transition: color 0.3s ease; /* Add smooth transition for hover effect */
+  }
+  
+  .scroll-button:hover {
+    color: #005bb5;
+  }
+  
+  /* Left and Right Button Positioning */
+  .scroll-button.left {
+    left: 10px; /* Position the left button on the left side */
+  }
+  
+  .scroll-button.right {
+    right: 10px; /* Position the right button on the right side */
+  }
+  

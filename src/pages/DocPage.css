@@ -126,9 +126,7 @@
 .pdf-viewer {
   width: 50%;
   height: 90vh; /* You can adjust this for better mobile layout */
-  border: 1px solid #ccc;
   margin-bottom: 2rem;
-  background: #f9f9f9;
 }
 
 
