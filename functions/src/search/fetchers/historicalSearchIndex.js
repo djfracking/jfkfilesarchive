@@ -17,8 +17,9 @@ async function fetchFromHistoricalSearchIndex(query) {
   if (!doc.exists) return null;
 
   const data = doc.data();
+  // If a file's count is missing, default to 1.
   const files = Array.isArray(data.files)
-    ? data.files.map(f => ({ name: f.name, count: f.count }))
+    ? data.files.map(f => ({ name: f.name, count: f.count !== undefined ? f.count : 1 }))
     : [];
 
   if (!files.length) return null;

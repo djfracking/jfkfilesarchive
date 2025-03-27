@@ -11,7 +11,6 @@ const voteComment = require("./src/comments/voteComment");
 const mainSearch = require("./src/search/searchMain");
 const castVotes = require("./src/voting/castVote");
 const getLeaderboard = require ("./src/leaderboard/getLeaderboard")
-const signedPdf = require ("./src/data/signedPDF")
 
 exports.addComment = addComment;
 exports.editComment = editComment;
@@ -20,4 +19,3 @@ exports.voteComment = voteComment;
 exports.castVotes = castVotes;
 exports.getLeaderboard = getLeaderboard;
 exports.mainSearch = mainSearch;
-exports.signedPdf = signedPdf;

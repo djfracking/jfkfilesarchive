@@ -22,6 +22,10 @@ async function mainSearchHandler(query) {
   const topResults = fullRankedResults.slice(0, 20);
   console.timeEnd("[RESULT TRIM]");
 
+  // Compute totals and message for the user.
+  const totalFound = fullRankedResults.length;
+  const message = `Found ${totalFound} result${totalFound !== 1 ? 's' : ''}. Showing top ${topResults.length}.`;
+
   const lowerQuery = query.trim().toLowerCase();
   const timestamp = new Date();
 
@@ -51,10 +55,12 @@ async function mainSearchHandler(query) {
     query,
     corrected,
     results: topResults,
-    totalFound: fullRankedResults.length,
-    totalPages: Math.ceil(fullRankedResults.length / 20),
+    totalFound,
+    totalPages: Math.ceil(totalFound / 20),
+    message,
   };
 }
+
 
 const mainSearch = onCall({
   memory: "512MiB",

@@ -1,7 +1,5 @@
 const admin = require("firebase-admin");
-if (!admin.apps.length) {
-  admin.initializeApp();
-}
+
 const db = admin.firestore();
 
 /**
@@ -14,7 +12,6 @@ const db = admin.firestore();
 async function fetchFromTitlesAndDescriptions(phrase) {
   const trimmedPhrase = phrase.trim();
   const lowerPhrase = trimmedPhrase.toLowerCase();
-  console.log(`[fetchFromTitlesAndDescriptions] Searching for phrase: "${trimmedPhrase}"`);
 
   const snap = await db.collection("JFK2025").get();
   const files = [];
