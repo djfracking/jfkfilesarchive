@@ -2,8 +2,6 @@ import React, { useEffect, useState } from "react";
 import algoliasearch from "algoliasearch/lite";
 import {
   InstantSearch,
-  SearchBox,
-  Hits,
   Pagination,
   Configure,
   Stats,
@@ -24,7 +22,7 @@ const searchClient = algoliasearch(
   process.env.REACT_APP_ALGOLIA_SEARCH_KEY
 );
 
-// Use your index "2025JFK".
+// Use your index "2025JFK_export" (or "2025JFK" as needed).
 const indexName = "2025JFK_export";
 console.log("Using Algolia index:", indexName);
 
@@ -60,7 +58,7 @@ const SearchResults = () => {
   const [error, setError] = useState(null);
   const navigate = useNavigate();
 
-  // Update the current page when URL parameters change.
+  // Update current page when URL parameters change.
   useEffect(() => {
     const page = parseInt(searchParams.get("page")) || 1;
     console.log("[SearchResults] Current page changed:", page);
@@ -70,10 +68,10 @@ const SearchResults = () => {
   // Log query/page changes and mark loading as false.
   useEffect(() => {
     console.log("[Algolia] Query or page changed:", { queryParam, currentPage });
-    // InstantSearch triggers a new search automatically.
     setLoading(false);
   }, [queryParam, currentPage]);
 
+  // Manual search form submission handler.
   const handleSearchSubmit = (e) => {
     e.preventDefault();
     const newQuery = e.target.elements.query.value.trim();
@@ -85,12 +83,14 @@ const SearchResults = () => {
 
   return (
     <div className="search-container">
+      {/* Manual search form */}
       <form onSubmit={handleSearchSubmit} className="search-bar">
         <input
-          type="text"
+          type="search"          
           name="query"
           placeholder="Search again..."
           defaultValue={queryParam}
+          enterKeyHint="search"
         />
         <button type="submit">Search</button>
       </form>
@@ -98,14 +98,9 @@ const SearchResults = () => {
       {loading && <LoadingStates searchStage="Loading..." />}
       {error && <p>{error}</p>}
 
-      <InstantSearch searchClient={searchClient} indexName={indexName}>
+      {/* InstantSearch block handles the search query, stats, hits, and pagination */}
+      <InstantSearch key={queryParam} searchClient={searchClient} indexName={indexName}>
         <Configure hitsPerPage={20} query={queryParam} />
-        <div className="search-bar-container">
-          <SearchBox
-            defaultRefinement={queryParam}
-            translations={{ placeholder: "Search..." }}
-          />
-        </div>
         <Stats
           translations={{
             stats(nbHits, timeSpentMS) {

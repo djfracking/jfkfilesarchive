@@ -77,11 +77,12 @@ const SearchBar = () => {
     <div className="search-wrapper">
       <form onSubmit={handleSubmit} className="search-form">
         <input
-          type="text"
+          type="search"
           placeholder="Search the archives..."
           value={searchQuery}
           onChange={handleInputChange}
           className="search-input"
+          enterKeyHint="search"
         />
         <button type="submit" className="search-button">
           Search

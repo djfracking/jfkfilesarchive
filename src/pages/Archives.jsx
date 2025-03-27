@@ -120,11 +120,12 @@ function Archives() {
       <div className={`archives-sidebar ${showSidebar ? 'visible' : ''}`}>
         <h3>Jump to Group</h3>
         <input
-          type="text"
+          type="search"
           className="archives-search"
           placeholder="Search groups..."
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
+          enterKeyHint="search"
         />
         <ul className="archives-sidebar-list">
           {filteredGroups.map((group) => (

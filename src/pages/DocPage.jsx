@@ -63,7 +63,10 @@ function DocPage() {
   const shareUrl = `https://jfkfilesarchive.com/doc/${id}`;
   const shareMessage = `Check out this declassified JFK document: "${docTitle}"`;
 
-
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []); 
+  
   useEffect(() => {
     const checkIfMobile = () => {
       const userAgent = navigator.userAgent || navigator.vendor || window.opera;
@@ -107,6 +110,10 @@ function DocPage() {
       console.error("Error loading metadata or votes:", err);
     }
   };
+  
+  useEffect(() => {
+    updateViews();
+  }, [id]);
   
   
   useEffect(() => {
