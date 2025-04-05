@@ -1,63 +1,41 @@
 import React, { useState, useEffect } from "react";
-import { getAuth, onAuthStateChanged } from "firebase/auth";
-import { getApp } from "firebase/app";
 import { useNavigate } from "react-router-dom";
-import {
-  getFirestore,
-  collection,
-  query,
-  where,
-  orderBy,
-  limit,
-  getDocs
-} from "firebase/firestore";
-import { deleteDoc, doc } from "firebase/firestore";
-
+import algoliasearch from "algoliasearch/lite";
 import "./Hero.css";
+
+const searchClient = algoliasearch(
+  process.env.REACT_APP_ALGOLIA_APP_ID,
+  process.env.REACT_APP_ALGOLIA_SEARCH_KEY
+);
+
+// Use your suggestions index
+const suggestionsIndexName = "2025JFK_export_query_suggestions";
 
 const SearchBar = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [suggestions, setSuggestions] = useState([]);
-  const [user, setUser] = useState(null);
   const navigate = useNavigate();
 
-  const app = getApp();
-  const auth = getAuth(app);
-  const db = getFirestore(app);
-
-  useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (u) => setUser(u));
-    return () => unsubscribe();
-  }, [auth]);
-
+  // When the input changes, fetch suggestions from Algolia
   const handleInputChange = async (event) => {
-    const value = event.target.value.toLowerCase();
+    const value = event.target.value;
     setSearchQuery(value);
-  
+
     if (value.length >= 2) {
-      const ref = collection(db, "historicalSearchIndex");
-      const snapshot = await getDocs(ref);
-  
-      const filtered = snapshot.docs
-        .map((doc) => doc.id)
-        .filter((term) => term.startsWith(value))
-        .slice(0, 5); // limit suggestions
-  
-      setSuggestions(filtered);
+      try {
+        const index = searchClient.initIndex(suggestionsIndexName);
+        const { hits } = await index.search(value, { hitsPerPage: 5 });
+        // Assume each suggestion hit has a "query" attribute.
+        setSuggestions(hits.map((hit) => hit.query));
+        console.log(suggestions)
+      } catch (err) {
+        console.error("Error fetching suggestions from Algolia:", err);
+        setSuggestions([]);
+      }
     } else {
       setSuggestions([]);
     }
   };
-  
-  const handleDeleteSuggestion = async (term) => {
-    try {
-      await deleteDoc(doc(db, "historicalSearchIndex", term));
-      setSuggestions((prev) => prev.filter((t) => t !== term));
-    } catch (err) {
-      console.error("Failed to delete suggestion:", err);
-    }
-  };
-  
 
   const handleSuggestionClick = (term) => {
     setSearchQuery(term);
@@ -88,40 +66,23 @@ const SearchBar = () => {
           Search
         </button>
       </form>
-  
+
       {suggestions.length > 0 && (
         <div className="preDictList">
           <ul className="suggestions-list">
             {suggestions.map((term, index) => (
-              <li onClick={() => handleSuggestionClick(term)}
-              key={index} className="suggestion-item">
-                <span
-                  style={{ flex: 1, cursor: "pointer" }}
-                >
-                  {term}
-                </span>
-                <button
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    handleDeleteSuggestion(term);
-                  }}
-                  style={{
-                    background: "transparent",
-                    border: "none",
-                    color: "#aaa",
-                    cursor: "pointer",
-                    marginLeft: "10px",
-                  }}
-                  aria-label={`Remove ${term}`}
-                >
-                  ❌
-                </button>
+              <li
+                key={index}
+                className="suggestion-item"
+                onClick={() => handleSuggestionClick(term)}
+                style={{ cursor: "pointer" }}
+              >
+                <span style={{ flex: 1 }}>{term}</span>
               </li>
             ))}
           </ul>
         </div>
       )}
-  
     </div>
   );
 };

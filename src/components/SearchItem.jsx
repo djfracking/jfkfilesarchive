@@ -36,6 +36,14 @@ const SearchItem = ({ objectID, algoliaTitle, algoliaDescription, onThumbnailNav
     thumbnailIndex: 0,
   });
 
+  // derive “baseID” by chopping off anything after “_part”
+  const baseID = objectID.split("_part")[0];
+
+  const handleClick = () => {
+    navigate(`/doc/${baseID}`);
+  };
+
+
   const app = getApp();
   const db = getFirestore(app);
 
@@ -86,16 +94,14 @@ const SearchItem = ({ objectID, algoliaTitle, algoliaDescription, onThumbnailNav
     fetchMetadata();
   }, [db, objectID, algoliaTitle, algoliaDescription]);
 
-  const handleClick = () => {
-    navigate(`/doc/${objectID}`);
-  };
 
   return (
     <div className="result-item clickable" onClick={handleClick}>
       <div className="result-left">
-        <a href={`/doc/${objectID}`} className="doc-title">
-          {meta.title}
-        </a>
+      <a href={`/doc/${baseID}`} className="doc-title">
+        {meta.title}
+      </a>
+
         <div className="doc-description">{meta.description}</div>
         <div className="doc-meta">
           <span>📁 2025JFK</span>

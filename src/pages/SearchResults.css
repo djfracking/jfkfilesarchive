@@ -132,3 +132,25 @@
   -webkit-line-clamp: 10; /* Optional: limits to 5 lines */
   -webkit-box-orient: vertical;
 }
+
+/* Remove bullet points and force horizontal layout */
+.pagination-container .ais-Pagination-list {
+  list-style: none;
+  display: flex;
+  justify-content: center;
+  padding: 0;
+  margin: 1rem 0;
+}
+
+/* Style each pagination item */
+.pagination-container .ais-Pagination-item {
+  margin: 0 5px;
+}
+
+/* Optional: Add hover/focus styling for better UX */
+.pagination-container .ais-Pagination-item a {
+  text-decoration: none;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}

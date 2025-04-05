@@ -11,10 +11,7 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import "./SearchResults.css";
 import { LoadingStates } from "../components/LoadingStates"; // Adjust path if needed
 import SearchItem from "../components/SearchItem"; // Ensure this is a default export
-
-// Log environment variables for debugging (remove in production)
-console.log("Algolia App ID:", process.env.REACT_APP_ALGOLIA_APP_ID);
-console.log("Algolia Search Key:", process.env.REACT_APP_ALGOLIA_SEARCH_KEY);
+import { connectStateResults } from "react-instantsearch-dom";
 
 // Initialize the Algolia client using env variables.
 const searchClient = algoliasearch(
@@ -22,63 +19,104 @@ const searchClient = algoliasearch(
   process.env.REACT_APP_ALGOLIA_SEARCH_KEY
 );
 
-// Use your index "2025JFK_export" (or "2025JFK" as needed).
-const indexName = "2025JFK_export";
-console.log("Using Algolia index:", indexName);
+// Define index names.
+const hitsIndex = "2025JFK_export";
+const suggestionsIndex = "2025JFK_export_query_suggestions";
 
-// Create a connected hits component that uses SearchItem for each hit.
-const CustomHits = connectHits(({ hits }) => {
-  console.log("[CustomHits] Received", hits.length, "hits");
-  hits.forEach((hit) =>
-    console.log("[CustomHits] Rendering hit:", hit.objectID, hit.title)
-  );
+// Connected Hits: render each hit using SearchItem.
+const CustomHits = connectHits(({ hits }) => (
+  <div className="results-list">
+    {hits.map((hit) => (
+      <SearchItem
+        key={hit.objectID}
+        objectID={hit.objectID}
+        algoliaTitle={hit.title}
+        algoliaDescription={hit.description}
+      />
+    ))}
+  </div>
+));
+
+// Custom QuerySuggestions component that fetches suggestions directly from Algolia.
+const QuerySuggestions = ({ currentQuery, onSelectSuggestion, indexName }) => {
+  const [suggestions, setSuggestions] = useState([]);
+
+  useEffect(() => {
+    if (currentQuery.length < 2) {
+      setSuggestions([]);
+      return;
+    }
+    const index = searchClient.initIndex(indexName);
+    index
+      .search(currentQuery, { hitsPerPage: 5 })
+      .then(({ hits }) => {
+        // Expect each hit to have a "query" attribute.
+        setSuggestions(hits.map((hit) => hit.query));
+      })
+      .catch(() => {
+        setSuggestions([]);
+      });
+  }, [currentQuery, indexName]);
+
+  if (suggestions.length === 0) return null;
+
   return (
-    <div className="results-list">
-      {hits.map((hit) => (
-        <SearchItem
-          key={hit.objectID}
-          objectID={hit.objectID}
-          algoliaTitle={hit.title}
-          algoliaDescription={hit.description}
-        />
+    <ul className="query-suggestions">
+      {suggestions.map((suggestion, idx) => (
+        <li key={idx} onClick={() => onSelectSuggestion(suggestion)}>
+          {suggestion}
+        </li>
       ))}
-    </div>
+    </ul>
   );
-});
+};
+
+const CustomResults = connectStateResults(({ searchState, searchResults, children }) =>
+  searchResults && searchResults.nbHits === 0 ? (
+    <div className="no-results">
+      No results found for "{searchState.query}"
+    </div>
+  ) : (
+    children
+  )
+);
 
 const SearchResults = () => {
   const [searchParams] = useSearchParams();
   const queryParam = searchParams.get("q") || "";
-  console.log("[SearchResults] Query parameter:", queryParam);
-
   const [currentPage, setCurrentPage] = useState(
     parseInt(searchParams.get("page")) || 1
   );
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [error] = useState(null);
+  const [currentQuery, setCurrentQuery] = useState(queryParam);
   const navigate = useNavigate();
 
   // Update current page when URL parameters change.
   useEffect(() => {
     const page = parseInt(searchParams.get("page")) || 1;
-    console.log("[SearchResults] Current page changed:", page);
     setCurrentPage(page);
   }, [searchParams]);
 
-  // Log query/page changes and mark loading as false.
+  // Mark loading as false (InstantSearch manages fetching automatically).
   useEffect(() => {
-    console.log("[Algolia] Query or page changed:", { queryParam, currentPage });
     setLoading(false);
   }, [queryParam, currentPage]);
 
-  // Manual search form submission handler.
+  // Handle manual search form submission.
   const handleSearchSubmit = (e) => {
     e.preventDefault();
     const newQuery = e.target.elements.query.value.trim();
-    console.log("[SearchResults] New query submitted:", newQuery);
     if (newQuery) {
+      setCurrentQuery(newQuery);
       navigate(`/search?q=${encodeURIComponent(newQuery)}&page=1`);
     }
+  };
+
+  // Handle suggestion click.
+  const handleSelectSuggestion = (suggestion) => {
+    setCurrentQuery(suggestion);
+    navigate(`/search?q=${encodeURIComponent(suggestion)}&page=1`);
   };
 
   return (
@@ -86,34 +124,43 @@ const SearchResults = () => {
       {/* Manual search form */}
       <form onSubmit={handleSearchSubmit} className="search-bar">
         <input
-          type="search"          
+          type="search"
           name="query"
-          placeholder="Search again..."
+          placeholder="Search the archives..."
           defaultValue={queryParam}
           enterKeyHint="search"
+          onChange={(e) => setCurrentQuery(e.target.value)}
         />
         <button type="submit">Search</button>
       </form>
 
+      {/* Query suggestions */}
+      <QuerySuggestions
+        currentQuery={currentQuery}
+        onSelectSuggestion={handleSelectSuggestion}
+        indexName={suggestionsIndex}
+      />
+
       {loading && <LoadingStates searchStage="Loading..." />}
       {error && <p>{error}</p>}
 
-      {/* InstantSearch block handles the search query, stats, hits, and pagination */}
-      <InstantSearch key={queryParam} searchClient={searchClient} indexName={indexName}>
+      <InstantSearch key={queryParam} searchClient={searchClient} indexName={hitsIndex}>
         <Configure hitsPerPage={20} query={queryParam} />
         <Stats
           translations={{
             stats(nbHits, timeSpentMS) {
-              console.log("[Stats] nbHits:", nbHits, "timeSpentMS:", timeSpentMS);
               return `${nbHits} results found in ${timeSpentMS}ms`;
             }
           }}
         />
-        <CustomHits />
+        <CustomResults>
+          <CustomHits />
+        </CustomResults>
         <div className="pagination-container">
           <Pagination />
         </div>
       </InstantSearch>
+
     </div>
   );
 };
