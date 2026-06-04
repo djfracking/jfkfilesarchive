@@ -84,7 +84,7 @@ function SignIn() {
       <Helmet>
         <title>Sign In — JFK Files Archive</title>
         <meta name="description" content="Sign in to search the complete JFK Files Archive." />
-        <link rel="canonical" href="https://chatjfkfiles.web.app/signin" />
+        <link rel="canonical" href="https://jfkfiklesarchive.web.app/signin" />
       </Helmet>
 
       <div className="auth-container">

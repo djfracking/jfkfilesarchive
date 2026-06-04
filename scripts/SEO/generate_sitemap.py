@@ -2,7 +2,7 @@ import json
 from pathlib import Path
 from datetime import datetime
 
-BASE_URL = "https://chatjfkfiles.web.app"
+BASE_URL = "https://jfkfiklesarchive.web.app"
 STATIC_PATHS = [
     "/", "/privacy", "/terms", "/methods", "/leaderboard",
     "/search", "/signin", "/signup", "/bookmarks", "/archive"

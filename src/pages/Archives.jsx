@@ -105,11 +105,11 @@ function Archives() {
            <Helmet>
               <title>Archives — 2025 JFK Assassination Files Archive</title>
               <meta name="description" content="Explore the complete 2025 JFK Assassination Files Archive — browse by thematic groups, subcategories, and access thousands of declassified documents." />
-              <link rel="canonical" href="https://chatjfkfiles.web.app/archives" />
+              <link rel="canonical" href="https://jfkfiklesarchive.web.app/archives" />
               <meta property="og:type" content="website" />
               <meta property="og:title" content="Archives — 2025 JFK Assassination Files Archive" />
               <meta property="og:description" content="Explore the complete 2025 JFK Assassination Files Archive — browse by thematic groups, subcategories, and access thousands of declassified documents." />
-              <meta property="og:url" content="https://chatjfkfiles.web.app/archives" />
+              <meta property="og:url" content="https://jfkfiklesarchive.web.app/archives" />
               <meta property="og:image" content="https://firebasestorage.googleapis.com/v0/b/chatjfkfiles.firebasestorage.app/o/seal.png?alt=media&token=6f179bcc-dcc8-4097-8aa9-028fa435008c" />
               <meta name="twitter:card" content="summary_large_image" />
               <meta name="twitter:title" content="Archives — 2025 JFK Assassination Files Archive" />

@@ -13,13 +13,13 @@ const Methods = () => {
           <Helmet>
             <title>Methods — How the JFK Files Archive Was Built | JFK Files Archive</title>
             <meta name="description" content="Discover the full technical process behind the JFK Files Archive — from OCR benchmarking and image conversion to multi-layered search index construction." />
-            <link rel="canonical" href="https://chatjfkfiles.web.app/methods" />
+            <link rel="canonical" href="https://jfkfiklesarchive.web.app/methods" />
 
             {/* Open Graph */}
             <meta property="og:type" content="article" />
             <meta property="og:title" content="Methods — How the JFK Files Archive Was Built" />
             <meta property="og:description" content="Explore our step‑by‑step methodology: OCR, indexing, NLP entity extraction, LLM processing, and cloud deployment powering the JFK Files Archive." />
-            <meta property="og:url" content="https://chatjfkfiles.web.app/methods" />
+            <meta property="og:url" content="https://jfkfiklesarchive.web.app/methods" />
             <meta property="og:image" content="https://firebasestorage.googleapis.com/v0/b/chatjfkfiles.firebasestorage.app/o/seal.png?alt=media&token=6f179bcc-dcc8-4097-8aa9-028fa435008c" />
 
             {/* Twitter Card */}

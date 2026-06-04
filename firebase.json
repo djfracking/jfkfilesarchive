@@ -16,6 +16,7 @@
     }
   ],
   "hosting": {
+    "site": "jfkfiklesarchive",
     "public": "build",
     "ignore": [
       "firebase.json",
