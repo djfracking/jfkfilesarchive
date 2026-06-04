@@ -58,7 +58,8 @@ function DocPage() {
   const [showTextSearch, setShowTextSearch] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
 
-  const pdfUrl = `https://firebasestorage.googleapis.com/v0/b/chatjfkfiles.firebasestorage.app/o/2025JFK%2F${id}.pdf?alt=media`;
+  const fallbackPdfUrl = `https://firebasestorage.googleapis.com/v0/b/chatjfkfiles.firebasestorage.app/o/2025JFK%2F${id}.pdf?alt=media`;
+  const [pdfUrl, setPdfUrl] = useState(fallbackPdfUrl);
   const encodedPdfUrl = encodeURIComponent(pdfUrl);
   const shareUrl = `https://jfkfiklesarchive.web.app/doc/${id}`;
   const shareMessage = `Check out this declassified JFK document: "${docTitle}"`;
@@ -77,6 +78,7 @@ function DocPage() {
   }, []);
 
   useEffect(() => {
+    setPdfUrl(fallbackPdfUrl);
     loadDocMetadata();
   }, [id]);
   
@@ -89,6 +91,7 @@ function DocPage() {
         const data = snap.data();
         setDocTitle(data.title || id);
         setDocDescription(data.description || "Declassified document from the JFK archive.");
+        setPdfUrl(data.pdf_url || fallbackPdfUrl);
       }
   
       // ✅ Grab all votes from docVotes where docId === id

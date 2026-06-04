@@ -245,6 +245,7 @@ Excerpt:
 def process_urls(
     urls: Iterable[str],
     workdir: Path,
+    offset: int,
     limit: int | None,
     max_pages: int | None,
     ocr_engine: str,
@@ -261,7 +262,9 @@ def process_urls(
     metadata_path = paths["metadata"] / "metadata.jsonl"
     enrichment_path = paths["metadata"] / "ollama_enrichment.jsonl"
 
-    selected = list(urls)[:limit] if limit else list(urls)
+    all_urls = list(urls)
+    selected = all_urls[offset:]
+    selected = selected[:limit] if limit else selected
     records: list[DocumentRecord] = []
 
     for idx, url in enumerate(selected, start=1):
@@ -332,6 +335,7 @@ def main() -> int:
     parser = argparse.ArgumentParser(description="Incrementally stage new release PDFs and OCR/enrich them locally.")
     parser.add_argument("--release-url", default="https://www.archives.gov/research/jfk/release-2025")
     parser.add_argument("--workdir", type=Path, default=DEFAULT_WORKDIR)
+    parser.add_argument("--offset", type=int, default=0)
     parser.add_argument("--limit", type=int, default=None)
     parser.add_argument("--max-pages", type=int, default=None)
     parser.add_argument("--ocr-engine", choices=["none", "apple_vision"], default="apple_vision")
@@ -366,6 +370,7 @@ def main() -> int:
     records = process_urls(
         urls=urls,
         workdir=args.workdir,
+        offset=args.offset,
         limit=args.limit,
         max_pages=args.max_pages,
         ocr_engine=args.ocr_engine,
