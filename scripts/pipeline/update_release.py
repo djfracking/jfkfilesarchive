@@ -44,6 +44,7 @@ class FirebaseUploader:
     def __init__(
         self,
         credentials_path: Path | None,
+        project_id: str,
         collection: str,
         bucket_name: str,
         storage_folder: str,
@@ -64,11 +65,12 @@ class FirebaseUploader:
         storage = importlib.import_module("firebase_admin.storage")
 
         if not firebase_admin._apps:
+            app_options = {"projectId": project_id, "storageBucket": bucket_name}
             if credentials_path:
                 cred = credentials.Certificate(str(credentials_path))
-                firebase_admin.initialize_app(cred, {"storageBucket": bucket_name})
+                firebase_admin.initialize_app(cred, app_options)
             else:
-                firebase_admin.initialize_app(options={"storageBucket": bucket_name})
+                firebase_admin.initialize_app(options=app_options)
 
         self.db = firestore.client()
         self.bucket = storage.bucket(bucket_name)
@@ -339,6 +341,7 @@ def main() -> int:
     parser.add_argument("--ollama-model", default=None)
     parser.add_argument("--upload-firebase", action="store_true")
     parser.add_argument("--firebase-credentials", type=Path, default=None)
+    parser.add_argument("--firebase-project", default="chatjfkfiles")
     parser.add_argument("--firebase-collection", default="2025JFK")
     parser.add_argument("--firebase-bucket", default="chatjfkfiles.firebasestorage.app")
     parser.add_argument("--firebase-storage-folder", default="2025JFK")
@@ -350,6 +353,7 @@ def main() -> int:
     if args.upload_firebase:
         firebase_uploader = FirebaseUploader(
             credentials_path=args.firebase_credentials,
+            project_id=args.firebase_project,
             collection=args.firebase_collection,
             bucket_name=args.firebase_bucket,
             storage_folder=args.firebase_storage_folder,
