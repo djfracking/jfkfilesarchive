@@ -1,0 +1,6 @@
+surya-ocr
+paddleocr
+paddlepaddle
+pymupdf
+pillow
+
