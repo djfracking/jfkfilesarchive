@@ -160,7 +160,7 @@ function SignUp() {
          <Helmet>
         <title>Sign Up — JFK Files Archive</title>
         <meta name="description" content="Create an account to explore the JFK Files Archive." />
-        <link rel="canonical" href="https://jfkfilesarchive.com/signup" />
+        <link rel="canonical" href="https://chatjfkfiles.web.app/signup" />
       </Helmet>
 
       <div className="auth-container">

@@ -60,7 +60,7 @@ function DocPage() {
 
   const pdfUrl = `https://firebasestorage.googleapis.com/v0/b/chatjfkfiles.firebasestorage.app/o/2025JFK%2F${id}.pdf?alt=media`;
   const encodedPdfUrl = encodeURIComponent(pdfUrl);
-  const shareUrl = `https://jfkfilesarchive.com/doc/${id}`;
+  const shareUrl = `https://chatjfkfiles.web.app/doc/${id}`;
   const shareMessage = `Check out this declassified JFK document: "${docTitle}"`;
 
   useEffect(() => {
@@ -254,7 +254,7 @@ function DocPage() {
     <meta property="og:title" content={docTitle} />
     <meta property="og:description" content={docDescription} />
     <meta property="og:type" content="article" />
-    <meta property="og:url" content={`https://jfkfilesarchive.com/doc/${id}`} />
+    <meta property="og:url" content={`https://chatjfkfiles.web.app/doc/${id}`} />
   </Helmet>
   
     <div className="doc-page-container">

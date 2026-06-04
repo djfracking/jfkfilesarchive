@@ -12,13 +12,13 @@ const Home = ({ handleSearch }) => (
     <Helmet>
       <title>JFK Files Archive</title>
       <meta name="description" content="Access the complete JFK Files Archive: searchable, indexed presidential documents, memos, and records. Explore thousands of declassified JFK‑era files." />
-      <link rel="canonical" href="https://jfkfilesarchive.com/" />
+      <link rel="canonical" href="https://chatjfkfiles.web.app/" />
 
       {/* Open Graph */}
       <meta property="og:type" content="website" />
       <meta property="og:title" content="JFK Files Archive — Search, Explore & Research" />
       <meta property="og:description" content="Access the complete JFK Files Archive: searchable, indexed presidential documents, memos, and records." />
-      <meta property="og:url" content="https://jfkfilesarchive.com/" />
+      <meta property="og:url" content="https://chatjfkfiles.web.app/" />
       <meta property="og:image" content="https://firebasestorage.googleapis.com/v0/b/chatjfkfiles.firebasestorage.app/o/seal.png?alt=media&token=6f179bcc-dcc8-4097-8aa9-028fa435008c" />
 
       {/* Twitter Card */}

@@ -62,12 +62,7 @@ const Header = () => {
     setDropdownOpen(false);
   };
 
-  const getTitle = () => {
-    const host = window.location.hostname;
-    if (host.includes("chatjfkfiles.com")) return "JFK Assassination Files Archive";
-    if (host.includes("jfkfilesarchives.com")) return "JFK Assassination Files Archive";
-    return "JFK Assassination Files Archive";
-  };
+  const getTitle = () => "JFK Assassination Files Archive";
 
   return (
     <header className="header">
