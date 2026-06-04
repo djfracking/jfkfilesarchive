@@ -10,12 +10,12 @@ scripts/benchmark_ocr/.venv/bin/python scripts/pipeline/update_release.py \
   --ocr-engine apple_vision
 ```
 
-Productionizing this should add:
+Productionizing this should continue with:
 
-- Firestore duplicate detection against `2025JFK`
-- Firebase Storage upload for staged PDFs
-- Firestore writes for staged metadata/text
-- resumable batches, e.g. `--offset`, `--limit`, and `--only-new-remote`
+- Larger dry runs with `--firebase-dry-run`
+- Real Firebase upload with `--upload-firebase`
+- Remote duplicate skipping with `--skip-existing-remote`
+- resumable batches, e.g. `--offset` in addition to `--limit`
 
 ## 2. Ollama Re-Analysis
 
@@ -58,4 +58,3 @@ If the Firestore index search is too slow or expensive, the next cheap option is
 - metadata/title index in Firebase Hosting as compressed JSON
 - term shards like `search-index/a.json`, `search-index/os.json`
 - client fetches only needed shards
-

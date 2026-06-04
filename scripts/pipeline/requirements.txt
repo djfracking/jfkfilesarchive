@@ -1,4 +1,4 @@
 beautifulsoup4
+firebase-admin<7
 pymupdf
 requests
-

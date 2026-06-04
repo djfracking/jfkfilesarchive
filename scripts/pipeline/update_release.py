@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 import argparse
 import hashlib
+import importlib
 import json
 import os
 import re
@@ -37,6 +38,74 @@ class DocumentRecord:
     final_chars: int
     ocr_engine: str
     processed_at: float
+
+
+class FirebaseUploader:
+    def __init__(
+        self,
+        credentials_path: Path | None,
+        collection: str,
+        bucket_name: str,
+        storage_folder: str,
+        dry_run: bool = False,
+    ):
+        self.dry_run = dry_run
+        self.collection = collection
+        self.storage_folder = storage_folder.strip("/")
+        self.db = None
+        self.bucket = None
+
+        if dry_run and not credentials_path and not os.getenv("GOOGLE_APPLICATION_CREDENTIALS"):
+            return
+
+        firebase_admin = importlib.import_module("firebase_admin")
+        credentials = importlib.import_module("firebase_admin.credentials")
+        firestore = importlib.import_module("firebase_admin.firestore")
+        storage = importlib.import_module("firebase_admin.storage")
+
+        if not firebase_admin._apps:
+            if credentials_path:
+                cred = credentials.Certificate(str(credentials_path))
+                firebase_admin.initialize_app(cred, {"storageBucket": bucket_name})
+            else:
+                firebase_admin.initialize_app(options={"storageBucket": bucket_name})
+
+        self.db = firestore.client()
+        self.bucket = storage.bucket(bucket_name)
+
+    def exists(self, doc_id: str) -> bool:
+        if self.db is None:
+            return False
+        return self.db.collection(self.collection).document(doc_id).get().exists
+
+    def upload(self, record: DocumentRecord, text: str) -> str:
+        pdf_path = Path(record.pdf_path)
+        blob_path = f"{self.storage_folder}/{pdf_path.name}" if self.storage_folder else pdf_path.name
+        if self.dry_run:
+            return f"dry-run://{blob_path}"
+
+        if self.bucket is None or self.db is None:
+            raise RuntimeError("Firebase uploader is not initialized with credentials.")
+
+        blob = self.bucket.blob(blob_path)
+        blob.upload_from_filename(str(pdf_path), content_type="application/pdf")
+        blob.make_public()
+        pdf_url = blob.public_url
+
+        data = {
+            "file_name": record.doc_id,
+            "pdf_url": pdf_url,
+            "source_url": record.source_url,
+            "sha256": record.sha256,
+            "byte_count": record.bytes,
+            "page_count": record.page_count,
+            "text": text,
+            "word_count": len(re.findall(r"\w+", text)),
+            "ocr_engine": record.ocr_engine,
+            "processed_at": record.processed_at,
+        }
+        self.db.collection(self.collection).document(record.doc_id).set(data, merge=True)
+        return pdf_url
 
 
 def ensure_dirs(workdir: Path) -> dict[str, Path]:
@@ -181,6 +250,8 @@ def process_urls(
     force_download: bool,
     force_reprocess: bool,
     ollama_model: str | None,
+    firebase_uploader: FirebaseUploader | None,
+    skip_existing_remote: bool,
 ) -> list[DocumentRecord]:
     paths = ensure_dirs(workdir)
     manifest_path = paths["state"] / "manifest.json"
@@ -198,6 +269,10 @@ def process_urls(
         text_path = paths["text"] / f"{doc_id}.txt"
 
         print(f"[{idx}/{len(selected)}] {doc_id}")
+        if firebase_uploader and skip_existing_remote and firebase_uploader.exists(doc_id):
+            print("  already exists in Firestore; skipping")
+            continue
+
         download_pdf(url, pdf_path, force=force_download)
         digest = sha256_file(pdf_path)
         existing = manifest["documents"].get(doc_id)
@@ -237,6 +312,12 @@ def process_urls(
         manifest["documents"][doc_id] = asdict(record)
         write_json(manifest_path, manifest)
 
+        if firebase_uploader:
+            print("  uploading to Firebase")
+            pdf_url = firebase_uploader.upload(record, final_text)
+            manifest["documents"][doc_id]["firebase_pdf_url"] = pdf_url
+            write_json(manifest_path, manifest)
+
         if ollama_model and final_text.strip():
             print(f"  enriching with Ollama model {ollama_model}")
             enrichment = enrich_with_ollama(ollama_model, doc_id, final_text)
@@ -256,7 +337,24 @@ def main() -> int:
     parser.add_argument("--force-download", action="store_true")
     parser.add_argument("--force-reprocess", action="store_true")
     parser.add_argument("--ollama-model", default=None)
+    parser.add_argument("--upload-firebase", action="store_true")
+    parser.add_argument("--firebase-credentials", type=Path, default=None)
+    parser.add_argument("--firebase-collection", default="2025JFK")
+    parser.add_argument("--firebase-bucket", default="chatjfkfiles.firebasestorage.app")
+    parser.add_argument("--firebase-storage-folder", default="2025JFK")
+    parser.add_argument("--skip-existing-remote", action="store_true")
+    parser.add_argument("--firebase-dry-run", action="store_true")
     args = parser.parse_args()
+
+    firebase_uploader = None
+    if args.upload_firebase:
+        firebase_uploader = FirebaseUploader(
+            credentials_path=args.firebase_credentials,
+            collection=args.firebase_collection,
+            bucket_name=args.firebase_bucket,
+            storage_folder=args.firebase_storage_folder,
+            dry_run=args.firebase_dry_run,
+        )
 
     print(f"Scraping PDF links from {args.release_url}")
     urls = pdf_links_from_release_page(args.release_url)
@@ -271,6 +369,8 @@ def main() -> int:
         force_download=args.force_download,
         force_reprocess=args.force_reprocess,
         ollama_model=args.ollama_model,
+        firebase_uploader=firebase_uploader,
+        skip_existing_remote=args.skip_existing_remote,
     )
     print(f"Processed {len(records)} changed document(s)")
     for record in records:
@@ -280,4 +380,3 @@ def main() -> int:
 
 if __name__ == "__main__":
     raise SystemExit(main())
-

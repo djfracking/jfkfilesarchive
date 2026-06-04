@@ -45,6 +45,33 @@ scripts/benchmark_ocr/.venv/bin/python scripts/pipeline/update_release.py \
   --ollama-model llama3.1:8b
 ```
 
+## Optional Firebase Upload
+
+First do a dry run:
+
+```bash
+scripts/benchmark_ocr/.venv/bin/python scripts/pipeline/update_release.py \
+  --release-url https://www.archives.gov/research/jfk/release-2025 \
+  --limit 3 \
+  --max-pages 2 \
+  --ocr-engine apple_vision \
+  --upload-firebase \
+  --firebase-dry-run
+```
+
+Then run the real upload with either Application Default Credentials or a service account JSON:
+
+```bash
+scripts/benchmark_ocr/.venv/bin/python scripts/pipeline/update_release.py \
+  --release-url https://www.archives.gov/research/jfk/release-2025 \
+  --limit 3 \
+  --max-pages 2 \
+  --ocr-engine apple_vision \
+  --upload-firebase \
+  --firebase-credentials /path/to/service-account.json \
+  --skip-existing-remote
+```
+
 ## Outputs
 
 - `work/pdfs/` - downloaded PDFs
@@ -62,3 +89,4 @@ scripts/benchmark_ocr/.venv/bin/python scripts/pipeline/update_release.py \
 5. Optionally run local Ollama enrichment over the staged text.
 6. Later phases can upload to Firebase and replace Algolia using static/Firebase search indexes.
 
+When `--upload-firebase` is enabled, the pipeline uploads the PDF to Firebase Storage and merges the text/metadata into the configured Firestore collection. The default collection is `2025JFK`.
