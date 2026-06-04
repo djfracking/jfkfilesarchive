@@ -118,6 +118,17 @@ def download_samples(urls):
     return downloaded
 
 
+def pdf_page_count(pdf):
+    code = "import fitz, sys; print(fitz.open(sys.argv[1]).page_count)"
+    try:
+        result = run([str(VENV_BIN / "python"), "-c", code, str(pdf)], timeout=30, env=benchmark_env())
+        if result["returncode"] == 0:
+            return int(result["stdout"].strip())
+    except Exception:
+        pass
+    return None
+
+
 def available_engines():
     env = benchmark_env()
     engines = {
@@ -174,16 +185,20 @@ def run_surya(pdf, max_pages):
     surya_ocr = shutil.which("surya_ocr", path=env["PATH"])
     if surya_ocr:
         out_dir = OUTPUTS / "surya_raw" / pdf.stem
+        shutil.rmtree(out_dir, ignore_errors=True)
         out_dir.mkdir(parents=True, exist_ok=True)
-        page_range = f"0-{max_pages - 1}" if max_pages > 1 else "0"
+        page_count = pdf_page_count(pdf)
+        pages_to_run = min(max_pages, page_count) if page_count else max_pages
+        page_range = f"0-{pages_to_run - 1}" if pages_to_run > 1 else "0"
         result = run(
             [surya_ocr, str(pdf), "--output_dir", str(out_dir), "--page_range", page_range],
             timeout=900,
             env=env,
         )
         text = ""
-        for path in out_dir.rglob("results.json"):
-            text += extract_surya_text(path) + "\n"
+        if result["returncode"] == 0:
+            for path in out_dir.rglob("results.json"):
+                text += extract_surya_text(path) + "\n"
         return {
             "engine": "surya",
             "elapsed_seconds": result["elapsed_seconds"],
@@ -197,6 +212,7 @@ def run_surya(pdf, max_pages):
 def run_paddleocr(pdf, max_pages):
     env = benchmark_env()
     out_dir = OUTPUTS / "paddle_raw" / pdf.stem
+    shutil.rmtree(out_dir, ignore_errors=True)
     out_dir.mkdir(parents=True, exist_ok=True)
     code = r"""
 import json
