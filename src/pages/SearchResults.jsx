@@ -1,166 +1,153 @@
-import React, { useEffect, useState } from "react";
-import algoliasearch from "algoliasearch/lite";
-import {
-  InstantSearch,
-  Pagination,
-  Configure,
-  Stats,
-  connectHits
-} from "react-instantsearch-dom";
+import React, { useEffect, useMemo, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
+import { httpsCallable } from "firebase/functions";
+import { functions } from "../firebase";
 import "./SearchResults.css";
-import { LoadingStates } from "../components/LoadingStates"; // Adjust path if needed
-import SearchItem from "../components/SearchItem"; // Ensure this is a default export
-import { connectStateResults } from "react-instantsearch-dom";
+import { LoadingStates } from "../components/LoadingStates";
+import SearchItem from "../components/SearchItem";
 
-// Initialize the Algolia client using env variables.
-const searchClient = algoliasearch(
-  process.env.REACT_APP_ALGOLIA_APP_ID,
-  process.env.REACT_APP_ALGOLIA_SEARCH_KEY
-);
+const RESULTS_PER_PAGE = 20;
 
-// Define index names.
-const hitsIndex = "2025JFK_export";
-const suggestionsIndex = "2025JFK_export_query_suggestions";
-
-// Connected Hits: render each hit using SearchItem.
-const CustomHits = connectHits(({ hits }) => (
-  <div className="results-list">
-    {hits.map((hit) => (
-      <SearchItem
-        key={hit.objectID}
-        objectID={hit.objectID}
-        algoliaTitle={hit.title}
-        algoliaDescription={hit.description}
-      />
-    ))}
-  </div>
-));
-
-// Custom QuerySuggestions component that fetches suggestions directly from Algolia.
-const QuerySuggestions = ({ currentQuery, onSelectSuggestion, indexName }) => {
-  const [suggestions, setSuggestions] = useState([]);
-
-  useEffect(() => {
-    if (currentQuery.length < 2) {
-      setSuggestions([]);
-      return;
-    }
-    const index = searchClient.initIndex(indexName);
-    index
-      .search(currentQuery, { hitsPerPage: 5 })
-      .then(({ hits }) => {
-        // Expect each hit to have a "query" attribute.
-        setSuggestions(hits.map((hit) => hit.query));
-      })
-      .catch(() => {
-        setSuggestions([]);
-      });
-  }, [currentQuery, indexName]);
-
-  if (suggestions.length === 0) return null;
-
-  return (
-    <ul className="query-suggestions">
-      {suggestions.map((suggestion, idx) => (
-        <li key={idx} onClick={() => onSelectSuggestion(suggestion)}>
-          {suggestion}
-        </li>
-      ))}
-    </ul>
-  );
+const docIdFromResult = (result) => {
+  const name = result?.name || result?.objectID || "";
+  return name.replace(/\.(pdf|txt)$/i, "");
 };
-
-const CustomResults = connectStateResults(({ searchState, searchResults, children }) =>
-  searchResults && searchResults.nbHits === 0 ? (
-    <div className="no-results">
-      No results found for "{searchState.query}"
-    </div>
-  ) : (
-    children
-  )
-);
 
 const SearchResults = () => {
   const [searchParams] = useSearchParams();
   const queryParam = searchParams.get("q") || "";
-  const [currentPage, setCurrentPage] = useState(
-    parseInt(searchParams.get("page")) || 1
-  );
-  const [loading, setLoading] = useState(true);
-  const [error] = useState(null);
+  const currentPage = parseInt(searchParams.get("page"), 10) || 1;
   const [currentQuery, setCurrentQuery] = useState(queryParam);
+  const [results, setResults] = useState([]);
+  const [summary, setSummary] = useState("");
+  const [corrected, setCorrected] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
   const navigate = useNavigate();
 
-  // Update current page when URL parameters change.
   useEffect(() => {
-    const page = parseInt(searchParams.get("page")) || 1;
-    setCurrentPage(page);
-  }, [searchParams]);
+    setCurrentQuery(queryParam);
 
-  // Mark loading as false (InstantSearch manages fetching automatically).
-  useEffect(() => {
-    setLoading(false);
-  }, [queryParam, currentPage]);
+    if (queryParam.trim().length < 2) {
+      setResults([]);
+      setSummary("");
+      setCorrected([]);
+      setError("");
+      setLoading(false);
+      return;
+    }
 
-  // Handle manual search form submission.
+    let ignore = false;
+    const runSearch = async () => {
+      setLoading(true);
+      setError("");
+
+      try {
+        const mainSearch = httpsCallable(functions, "mainSearch");
+        const response = await mainSearch({ query: queryParam.trim() });
+        if (ignore) return;
+
+        const data = response.data || {};
+        setResults(Array.isArray(data.results) ? data.results : []);
+        setCorrected(Array.isArray(data.corrected) ? data.corrected : []);
+        setSummary(data.message || "");
+      } catch (err) {
+        if (ignore) return;
+        console.error("Firebase search failed:", err);
+        setResults([]);
+        setSummary("");
+        setCorrected([]);
+        setError("Search is temporarily unavailable. Please try again.");
+      } finally {
+        if (!ignore) setLoading(false);
+      }
+    };
+
+    runSearch();
+
+    return () => {
+      ignore = true;
+    };
+  }, [queryParam]);
+
+  const pagedResults = useMemo(() => {
+    const start = (currentPage - 1) * RESULTS_PER_PAGE;
+    return results.slice(start, start + RESULTS_PER_PAGE);
+  }, [results, currentPage]);
+
+  const totalPages = Math.max(1, Math.ceil(results.length / RESULTS_PER_PAGE));
+
   const handleSearchSubmit = (e) => {
     e.preventDefault();
     const newQuery = e.target.elements.query.value.trim();
     if (newQuery) {
-      setCurrentQuery(newQuery);
       navigate(`/search?q=${encodeURIComponent(newQuery)}&page=1`);
     }
   };
 
-  // Handle suggestion click.
-  const handleSelectSuggestion = (suggestion) => {
-    setCurrentQuery(suggestion);
-    navigate(`/search?q=${encodeURIComponent(suggestion)}&page=1`);
+  const goToPage = (page) => {
+    navigate(`/search?q=${encodeURIComponent(queryParam)}&page=${page}`);
   };
 
   return (
     <div className="search-container">
-      {/* Manual search form */}
       <form onSubmit={handleSearchSubmit} className="search-bar">
         <input
           type="search"
           name="query"
           placeholder="Search the archives..."
-          defaultValue={queryParam}
+          value={currentQuery}
           enterKeyHint="search"
           onChange={(e) => setCurrentQuery(e.target.value)}
         />
         <button type="submit">Search</button>
       </form>
 
-      {/* Query suggestions */}
-      <QuerySuggestions
-        currentQuery={currentQuery}
-        onSelectSuggestion={handleSelectSuggestion}
-        indexName={suggestionsIndex}
-      />
+      {loading && <LoadingStates searchStage="Searching..." />}
+      {error && <p className="search-error">{error}</p>}
 
-      {loading && <LoadingStates searchStage="Loading..." />}
-      {error && <p>{error}</p>}
+      {!loading && !error && queryParam && (
+        <>
+          <div className="results-summary">
+            {summary || `${results.length} result${results.length === 1 ? "" : "s"} found.`}
+            {corrected.length > 0 && (
+              <span className="corrected-terms"> Matched terms: {corrected.join(", ")}</span>
+            )}
+          </div>
 
-      <InstantSearch key={queryParam} searchClient={searchClient} indexName={hitsIndex}>
-        <Configure hitsPerPage={20} query={queryParam} />
-        <Stats
-          translations={{
-            stats(nbHits, timeSpentMS) {
-              return `${nbHits} results found in ${timeSpentMS}ms`;
-            }
-          }}
-        />
-        <CustomResults>
-          <CustomHits />
-        </CustomResults>
-        <div className="pagination-container">
-          <Pagination />
-        </div>
-      </InstantSearch>
+          {results.length === 0 ? (
+            <div className="no-results">No results found for "{queryParam}"</div>
+          ) : (
+            <div className="results-list">
+              {pagedResults.map((result) => {
+                const objectID = docIdFromResult(result);
+                return (
+                  <SearchItem
+                    key={objectID}
+                    objectID={objectID}
+                    algoliaTitle={objectID}
+                    algoliaDescription={`Score: ${Math.round(result.score || 0)}`}
+                  />
+                );
+              })}
+            </div>
+          )}
 
+          {totalPages > 1 && (
+            <div className="pagination">
+              <button disabled={currentPage <= 1} onClick={() => goToPage(currentPage - 1)}>
+                Previous
+              </button>
+              <span>
+                Page {currentPage} of {totalPages}
+              </span>
+              <button disabled={currentPage >= totalPages} onClick={() => goToPage(currentPage + 1)}>
+                Next
+              </button>
+            </div>
+          )}
+        </>
+      )}
     </div>
   );
 };
